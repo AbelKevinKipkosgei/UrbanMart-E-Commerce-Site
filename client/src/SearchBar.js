@@ -1,22 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { CartContext } from './CartContext'; // Make sure to import your CartContext
 
 const SearchBar = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [results, setResults] = useState([]);
-  const [allProducts, setAllProducts] = useState([]); // To store all products
+  const [allProducts, setAllProducts] = useState([]);
+  const { addToCart } = useContext(CartContext); // Use context to access addToCart function
 
   useEffect(() => {
-    // Fetch all products on component mount
     const fetchProducts = async () => {
       try {
-        const response = await fetch('/products'); // Fetch from the API
+        const response = await fetch('/products');
         const data = await response.json();
         setAllProducts(data); // Store all products
       } catch (error) {
         console.error('Error fetching products:', error);
       }
     };
-
     fetchProducts();
   }, []);
 
@@ -35,6 +35,10 @@ const SearchBar = () => {
     }
   };
 
+  const handleAddToCart = (product) => {
+    addToCart(product);
+  };
+
   return (
     <div>
       <input
@@ -45,7 +49,10 @@ const SearchBar = () => {
       />
       <ul>
         {results.map((product) => (
-          <li key={product.id}>{product.name}</li> // Assuming each product has a unique id
+          <li key={product.id}>
+            {product.name}
+            <button onClick={() => handleAddToCart(product)}>Add to Cart</button>
+          </li> // Assuming each product has a unique id
         ))}
       </ul>
     </div>
@@ -53,3 +60,4 @@ const SearchBar = () => {
 };
 
 export default SearchBar;
+
