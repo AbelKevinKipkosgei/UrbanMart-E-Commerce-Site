@@ -35,7 +35,7 @@ class User(db.Model, SerializerMixin):
     username = db.Column(db.String, nullable=False, unique=True)
     _password_hash = db.Column(db.String, nullable=False)
     role = db.Column(db.String, nullable=False, default='user')
-    bio = db.Column(db.String, nullable=False)
+    bio = db.Column(db.String, nullable=False, default='A new user who is still trying to find their way around.')
 
     # Relationship mapping user to products
     products = db.relationship('Product', secondary=user_product, back_populates='users')
