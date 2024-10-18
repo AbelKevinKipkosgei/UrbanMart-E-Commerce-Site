@@ -1,41 +1,46 @@
-import React, { useState } from 'react';
-import logo from './logo.svg';
-import './App.css';
-import SearchBar from './SearchBar'; 
-import SignupForm from './SignUpForm';
-import LoginForm from './LogInForm';
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes} from 'react-router-dom';
+import HomePage from './pages/HomePage';
+import ProductsPage from './pages/ProductsPage';
+// import logo from './logo.svg';
+// import './App.css';
+// import SearchBar from './SearchBar'; 
+// import SignupForm from './SignUpForm';
+// import LoginForm from './LogInForm';
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [showSignup, setShowSignup] = useState(true); 
-  const [signupSuccess, setSignupSuccess] = useState(false);
+  // const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // const [showSignup, setShowSignup] = useState(true); 
+  // const [signupSuccess, setSignupSuccess] = useState(false);
 
-  const toggleForm = () => {
-    setShowSignup(!showSignup);
-  };
-  const handleSignup = () => {
-    setSignupSuccess(true); 
-    setShowSignup(false); 
+  // const toggleForm = () => {
+  //   setShowSignup(!showSignup);
+  // };
+  // const handleSignup = () => {
+  //   setSignupSuccess(true); 
+  //   setShowSignup(false); 
 
-    console.log('User successfully signed up!');  
-  };
-  const handleLogin = () => {
-    setIsLoggedIn(true);
-  };
+  //   console.log('User successfully signed up!');  
+  // };
+  // const handleLogin = () => {
+  //   setIsLoggedIn(true);
+  // };
 
-  const handleLogout = () => {
-    setIsLoggedIn(false);
-  };
+  // const handleLogout = () => {
+  //   setIsLoggedIn(false);
+  // };
   
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
+      <h1>UrbanMart</h1>
+      <Router>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/products"  element={<ProductsPage />} />
+        </Routes>
+      </Router>
 
-        {/* Conditionally render either the sign-up or login form */}
+      {/* Conditionally render either the sign-up or login form
         {isLoggedIn ? (
           <>
         <SearchBar/> 
@@ -56,9 +61,7 @@ function App() {
             </button>
             )}
           </>
-        )}
-       
-      </header>
+        )} */}
     </div>
   );
 }
