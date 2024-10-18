@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import ProductCard from "./ProductCard";
+import './Products.css'
 
 function Products() {
   const [products, setProducts] = useState([]);
@@ -27,26 +29,17 @@ function Products() {
     fetchProducts();
   }, []);
 
-  if (loading) return <p>Loading...</p>; 
+  if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <div>
-      <h1>Products</h1>
-      <ul>
+    <div className="product-container">
+      <h1 className="product-title">Products</h1>
+      <div className="product-list">
         {products.map((product) => (
-          <li key={product.id}>
-            <h2>{product.name}</h2>
-            <p>{product.description}</p>
-            <img
-              src={product.image_url}
-              alt={product.name}
-              style={{ width: "300px", height: "250px" }}
-            />
-            <p>Price: ${product.price.toFixed(2)}</p>
-          </li>
+          <ProductCard key={product.id} product={product} />
         ))}
-      </ul>
+      </div>
     </div>
   );
 }
