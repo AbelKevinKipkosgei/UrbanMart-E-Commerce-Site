@@ -34,7 +34,6 @@ function Products() {
 
   return (
     <div className="product-container">
-      <h1 className="product-title">Products</h1>
       <div className="product-list">
         {products.map((product) => (
           <ProductCard key={product.id} product={product} />
