@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, } from "react";
 import ProductCard from "./ProductCard";
 import './Products.css'
 
-function Products() {
+function Products({onAddToCart}) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -36,7 +36,7 @@ function Products() {
     <div className="product-container">
       <div className="product-list">
         {products.map((product) => (
-          <ProductCard key={product.id} product={product} />
+          <ProductCard key={product.id} product={product} onAddToCart={onAddToCart}/>
         ))}
       </div>
     </div>

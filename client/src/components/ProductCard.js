@@ -1,7 +1,7 @@
 import React from 'react'
 import './ProductCard.css'
 
-function ProductCard({product}) {
+function ProductCard({product, onAddToCart}) {
   return (
     <div className="product-card">
       <img
@@ -17,6 +17,7 @@ function ProductCard({product}) {
         alt="Add to cart"
         className="add-to-cart"
         title='Add to cart'
+        onClick={() => onAddToCart(product)}
       />
     </div>
   );

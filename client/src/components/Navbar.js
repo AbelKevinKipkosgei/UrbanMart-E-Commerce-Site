@@ -3,7 +3,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "./Navbar.css";
 
-function Navbar() {
+function Navbar({cartItems}) {
   return (
     <nav className="navbar">
       <div className="navbar-logo">
@@ -17,7 +17,7 @@ function Navbar() {
           <Link to="/products">Products</Link>
         </li>
         <li>
-          <Link to="/contact">Contact</Link>
+          <Link to="/cart">Cart ({cartItems.length})</Link>
         </li>
       </ul>
       <div className="navbar-buttons">
