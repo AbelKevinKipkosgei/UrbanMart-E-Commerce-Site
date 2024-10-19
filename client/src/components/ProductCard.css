@@ -1,3 +1,5 @@
+/* ProductCard.css */
+
 .product-card {
     border: 1px solid #b1b1b1;
     background-color: #eeeeee;
@@ -9,6 +11,7 @@
     transition: transform 0.2s;
     flex: 1 0 30%;
     max-width: 250px;
+    position: relative; /* Set position to relative to contain absolute positioned elements */
 }
 
 .product-card:hover {
@@ -34,4 +37,18 @@
 .product-price {
     font-size: 1.2em;
     color: #000;
+}
+
+.add-to-cart {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.add-to-cart:hover {
+    transform: scale(1.1);
 }
