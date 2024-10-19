@@ -1,4 +1,4 @@
-from passlib.hash import bcrypt
+from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.ext.hybrid import hybrid_property
 from config import db
@@ -45,18 +45,18 @@ class User(db.Model, SerializerMixin):
 
     # Password encryption
     @hybrid_property
-    def password_hash(self):
-        raise AttributeError({
-            'message': 'Password is not accessible',
-        })
+    def password(self):
+        raise AttributeError('Password is not accessible')
     
-    @password_hash.setter
-    def password_hash(self, password):
-        self._password_hash = bcrypt.hash(password)
+    @password.setter
+    def password(self, password):
+        # Hash the password using werkzeug.security
+        self._password_hash = generate_password_hash(password)
     
     # Authenticator
     def authenticate(self, password):
-        return bcrypt.verify(self._password_hash, password)
+        # Verify the password using werkzeug.security
+        return check_password_hash(self._password_hash, password)
 
     def __repr__(self):
         return f'User ID: {self.id}, Username: {self.username}, Role: {self.role}>'
