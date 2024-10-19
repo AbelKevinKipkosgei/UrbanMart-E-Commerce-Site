@@ -1,71 +1,65 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes} from 'react-router-dom';
-import HomePage from './pages/HomePage';
-import ProductsPage from './pages/ProductsPage';
-import Login from './pages/Login';
-import SignUp from './pages/SignUp';
-import './App.css';
-import Navbar from './components/Navbar';
-// import SearchBar from './SearchBar'; 
-// import SignupForm from './SignUpForm';
-// import LoginForm from './LogInForm';
+import React, { useState, useEffect } from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import HomePage from "./pages/HomePage";
+import ProductsPage from "./pages/ProductsPage";
+import Login from "./pages/Login";
+import SignUp from "./pages/SignUp";
+import CartPage from "./pages/CartPage"; // Cart Page
+import Navbar from "./components/Navbar";
+import "./App.css";
 
 function App() {
-  // const [isLoggedIn, setIsLoggedIn] = useState(false);
-  // const [showSignup, setShowSignup] = useState(true); 
-  // const [signupSuccess, setSignupSuccess] = useState(false);
+  // State to manage cart items
+  const [cartItems, setCartItems] = useState([]);
 
-  // const toggleForm = () => {
-  //   setShowSignup(!showSignup);
-  // };
-  // const handleSignup = () => {
-  //   setSignupSuccess(true); 
-  //   setShowSignup(false); 
+  // Load cart from localStorage on initial render
+  useEffect(() => {
+    const storedCartItems = localStorage.getItem("cartItems");
+    if (storedCartItems) {
+      setCartItems(JSON.parse(storedCartItems));
+    }
+  }, []);
 
-  //   console.log('User successfully signed up!');  
-  // };
-  // const handleLogin = () => {
-  //   setIsLoggedIn(true);
-  // };
+  // Save cart to localStorage whenever cartItems state changes
+  useEffect(() => {
+    localStorage.setItem("cartItems", JSON.stringify(cartItems));
+  }, [cartItems]);
 
-  // const handleLogout = () => {
-  //   setIsLoggedIn(false);
-  // };
-  
+  // Function to add items to the cart
+  const handleAddToCart = (product) => {
+    setCartItems((prevItems) => [...prevItems, product]);
+  };
+
+  // Function to remove items from the cart
+  const handleRemoveFromCart = (product) => {
+    setCartItems((prevItems) =>
+      prevItems.filter((item) => item.id !== product.id)
+    );
+  };
+
   return (
     <div className="App">
       <Router>
-        <Navbar />
+        <Navbar cartItems={cartItems} /> {/* Pass cartItems to Navbar */}
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/products" element={<ProductsPage />} />
-          <Route path="/login" element={<Login/>}/>
-          <Route path="/signup" element={<SignUp/>}/>
+          <Route
+            path="/products"
+            element={<ProductsPage onAddToCart={handleAddToCart} />} // Pass add-to-cart handler
+          />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route
+            path="/cart"
+            element={
+              <CartPage
+                cartItems={cartItems}
+                onRemoveFromCart={handleRemoveFromCart}
+              />
+            } // Pass cartItems and remove handler to CartPage
+          />
         </Routes>
       </Router>
-
-      {/* Conditionally render either the sign-up or login form
-        {isLoggedIn ? (
-          <>
-        <SearchBar/> 
-        <p>Welcome! You are logged in.</p>
-        <button onClick={handleLogout}>Logout</button>
-          </>
-        ) : (
-          <>
-            {signupSuccess && <p>User successfully signed up! Please log in.</p>}
-            {showSignup ? (
-              <SignupForm onSignup={handleSignup}/>
-            ) : (
-              <LoginForm onLogin={handleLogin} /> 
-            )}
-            {!signupSuccess && (
-            <button onClick={toggleForm}>
-              {showSignup ? 'Already have an account? Log In' : 'Need an account? Sign Up'}
-            </button>
-            )}
-          </>
-        )} */}
     </div>
   );
 }
