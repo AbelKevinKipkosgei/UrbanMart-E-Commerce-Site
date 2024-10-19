@@ -8,6 +8,7 @@ from sqlalchemy import MetaData
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///urban_mart.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SECRET_KEY'] = 'jf}hbYT6*_mnEy8n}SG=>xcfD5h78Di6'
 app.json.compact = False
 
 metadata = MetaData(naming_convention={
