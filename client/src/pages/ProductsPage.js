@@ -1,10 +1,10 @@
 import React from 'react'
 import Products from '../components/Products'
 
-function ProductsPage() {
+function ProductsPage({onAddToCart}) {
   return (
     <div>
-      <Products/>
+      <Products onAddToCart={onAddToCart} />
     </div>
   )
 }
