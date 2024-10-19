@@ -15,7 +15,8 @@ const validationSchema = Yup.object().shape({
     .oneOf([Yup.ref("password"), null], "Passwords must match")
     .required("Password confirmation is required"),
   bio: Yup.string() // Optional bio validation
-    .max(100, "Bio cannot exceed 100 characters"), // You can set a limit
+    .max(100, "Bio cannot exceed 100 characters")
+    .required("Bio is required")
 });
 
 const SignUpForm = () => {
