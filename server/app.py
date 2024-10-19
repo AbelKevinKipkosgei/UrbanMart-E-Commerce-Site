@@ -1,9 +1,12 @@
+import os
 from flask import jsonify, make_response, request, session
 from flask_restful import Resource
 
 from config import app, db, api
 from models import Product, User
 
+# App secret key
+app.secret_key = os.urandom(24)
 
 @app.before_request
 def check_log_in_status():
@@ -23,23 +26,37 @@ class AllUsersResource(Resource):
     
 class Signup(Resource):
     def post(self):
-        data  = request.get_json()
-        if ('username' not in data or 'password' not in data and 'password_confirmation' not in data):
+        data = request.get_json()
+        app.logger.debug("Incoming signup data: %s", data)
+
+        if 'username' not in data or 'password' not in data and 'password_confirmation' not in data:
             return make_response(jsonify({
                 'error': {
-                    'message': 'username and password required'
+                    'message': 'Username and both passwords are required'
                 }
             }), 422)
         
-        # Create a new user
+        # Check for existing user
+        username = data.get('username')
+        existing_user = User.query.filter_by(username=username).first()
+        if existing_user:
+            return jsonify({"error": "Username already taken"}), 400
+
+        if data['password'] != data['password_confirmation']:
+            return make_response(jsonify({
+                'error': {
+                    'message': 'Passwords do not match'
+                }
+            }), 422)
+
         new_user = User(
-            username = data.get('username'),
-            role = data.get('role'),
-            bio  = data.get('bio')
+            username=username,
+            role=data.get('role', 'user'),
+            bio=data.get('bio')
         )
 
         # Hash password and store it
-        new_user.password_hash = data.get('password')
+        new_user.password = data['password']
 
         # Add user to database
         db.session.add(new_user)
@@ -48,14 +65,13 @@ class Signup(Resource):
         # Save user ID to session
         session['user_id'] = new_user.id
 
-        response = make_response(jsonify({
+        return make_response(jsonify({
             'user_id': new_user.id,
             'username': new_user.username,
             'role': new_user.role,
             'bio': new_user.bio
-        }),  201)
+        }), 201)
 
-        return response
     
 class CheckSession(Resource):
     def get(self):
@@ -100,7 +116,7 @@ class Login(Resource):
                 'error': {
                     'message': 'Invalid credentials'
                 }
-            }))
+            }), 401)
         
         # If authentication succeeds, 
         session['user_id'] = user.id
