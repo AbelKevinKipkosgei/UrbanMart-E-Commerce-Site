@@ -3,7 +3,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "./Navbar.css";
 
-function Navbar({cartItems}) {
+function Navbar({cartItems, orders}) {
   return (
     <nav className="navbar">
       <div className="navbar-logo">
@@ -18,6 +18,10 @@ function Navbar({cartItems}) {
         </li>
         <li>
           <Link to="/cart">Cart ({cartItems.length})</Link>
+        </li>
+        <li>
+          <Link to="/orders">Orders ({orders.length})</Link>{" "}
+          {/* Add Orders link */}
         </li>
       </ul>
       <div className="navbar-buttons">

@@ -1,7 +1,7 @@
 import React from "react";
 import "./CartPage.css";
 
-function CartPage({ cartItems, onRemoveFromCart }) {
+function CartPage({ cartItems, onRemoveFromCart, onCheckout }) {
   return (
     <div className="cart-page">
       <h2>Your Cart</h2>
@@ -19,13 +19,21 @@ function CartPage({ cartItems, onRemoveFromCart }) {
               <h3>{item.name}</h3>
               <p>${item.price}</p>
             </div>
-            <img
-              onClick={() => onRemoveFromCart(item)}
-              alt="Remove from Cart"
-              title="Remove"
-              src="/remove-from-cart.png"
-              className="remove-from-cart"
-            />
+            <div className="cart-item-actions">
+              <img
+                onClick={() => onRemoveFromCart(item)}
+                alt="Remove from Cart"
+                title="Remove"
+                src="/remove-from-cart.png"
+                className="remove-from-cart"
+              />
+              <button
+                onClick={() => onCheckout(item)}
+                className="checkout-button"
+              >
+                Checkout
+              </button>
+            </div>
           </div>
         ))
       )}
@@ -34,3 +42,4 @@ function CartPage({ cartItems, onRemoveFromCart }) {
 }
 
 export default CartPage;
+

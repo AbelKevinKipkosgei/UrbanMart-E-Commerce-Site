@@ -5,25 +5,32 @@ import ProductsPage from "./pages/ProductsPage";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import CartPage from "./pages/CartPage"; // Cart Page
+import OrdersPage from "./pages/OrdersPage"; // Orders Page
 import Navbar from "./components/Navbar";
 import "./App.css";
 
 function App() {
-  // State to manage cart items
+  // State to manage cart items and orders
   const [cartItems, setCartItems] = useState([]);
+  const [orders, setOrders] = useState([]);
 
-  // Load cart from localStorage on initial render
+  // Load cart and orders from localStorage on initial render
   useEffect(() => {
     const storedCartItems = localStorage.getItem("cartItems");
-    if (storedCartItems) {
-      setCartItems(JSON.parse(storedCartItems));
-    }
+    const storedOrders = localStorage.getItem("orders");
+
+    if (storedCartItems) setCartItems(JSON.parse(storedCartItems));
+    if (storedOrders) setOrders(JSON.parse(storedOrders));
   }, []);
 
-  // Save cart to localStorage whenever cartItems state changes
+  // Save cart and orders to localStorage whenever they change
   useEffect(() => {
     localStorage.setItem("cartItems", JSON.stringify(cartItems));
   }, [cartItems]);
+
+  useEffect(() => {
+    localStorage.setItem("orders", JSON.stringify(orders));
+  }, [orders]);
 
   // Function to add items to the cart
   const handleAddToCart = (product) => {
@@ -37,10 +44,23 @@ function App() {
     );
   };
 
+  // Function to checkout items from the cart
+  const handleCheckout = (item) => {
+    setOrders((prevOrders) => [...prevOrders, item]); // Add item to orders
+    handleRemoveFromCart(item); // Remove item from cart after checkout
+  };
+
+  // Function to cancel an order
+  const handleCancelOrder = (order) => {
+    setOrders((prevOrders) =>
+      prevOrders.filter((item) => item.id !== order.id)
+    );
+  };
+
   return (
     <div className="App">
       <Router>
-        <Navbar cartItems={cartItems} /> {/* Pass cartItems to Navbar */}
+        <Navbar cartItems={cartItems} orders={orders} />
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route
@@ -55,8 +75,18 @@ function App() {
               <CartPage
                 cartItems={cartItems}
                 onRemoveFromCart={handleRemoveFromCart}
+                onCheckout={handleCheckout} // Pass checkout handler
               />
-            } // Pass cartItems and remove handler to CartPage
+            }
+          />
+          <Route
+            path="/orders"
+            element={
+              <OrdersPage
+                orders={orders}
+                onCancelOrder={handleCancelOrder} // Pass cancel order handler
+              />
+            }
           />
         </Routes>
       </Router>
@@ -65,3 +95,4 @@ function App() {
 }
 
 export default App;
+

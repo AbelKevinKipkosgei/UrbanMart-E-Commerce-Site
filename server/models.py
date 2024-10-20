@@ -66,7 +66,7 @@ class Product(db.Model, SerializerMixin):
     users = association_proxy('orders', 'user', creator=lambda user_obj: Order(user=user_obj))
 
     # Serialization rules
-    serialize_rules = ('-users.products',)
+    serialize_rules = ('-orders.products',)
 
     def __repr__(self):
         return f'<Product ID: {self.id}, Name: {self.name}, Price: {self.price}>'
@@ -75,6 +75,7 @@ class Order(db.Model, SerializerMixin):
     __tablename__ = 'orders'
 
     id = db.Column(db.Integer, primary_key=True)
+    created_at = db.Column(db.DateTime, default=db.func.now())
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
     # Relationship mapping order to user
@@ -84,5 +85,5 @@ class Order(db.Model, SerializerMixin):
     products = db.relationship('Product', secondary=order_product, back_populates='orders')
 
     # Serialization rules
-    serialize_rules = ('-user.orders',)
+    serialize_rules = ('-user.orders','-products.orders')
     
