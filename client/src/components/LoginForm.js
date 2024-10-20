@@ -1,6 +1,7 @@
 import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import "./LoginForm.css";
 
 // Validation schema for login
@@ -9,7 +10,9 @@ const validationSchema = Yup.object().shape({
   password: Yup.string().required("Password is required"),
 });
 
-const LoginForm = () => {
+const LoginForm = ({ onLogin }) => {
+  const navigate = useNavigate(); // Initialize useNavigate
+
   return (
     <div className="form-container">
       <h2>Login</h2>
@@ -19,7 +22,7 @@ const LoginForm = () => {
           password: "",
         }}
         validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
+        onSubmit={(values, { setSubmitting, resetForm, setErrors }) => {
           // Fetch API for posting login data
           fetch("/login", {
             method: "POST",
@@ -33,16 +36,18 @@ const LoginForm = () => {
           })
             .then((response) => response.json())
             .then((data) => {
-              if (data.success) {
-                alert("Login successful");
-                // Clear the form fields after successful login
-                resetForm();
+              if (data.error) {
+                setErrors({ username: "Invalid username or password." });
               } else {
-                alert("Invalid username or password");
+                alert("Login successful");
+                onLogin(); // Call onLogin for any additional login logic
+                resetForm();
+                navigate("/"); // Redirect to the home page
               }
             })
             .catch((error) => {
               console.error("There was an error!", error);
+              setErrors({ username: "An error occurred. Please try again." });
             })
             .finally(() => setSubmitting(false));
         }}
@@ -51,12 +56,12 @@ const LoginForm = () => {
           <Form>
             <div className="form-field">
               <label htmlFor="username">Username</label>
-              <Field type="text" name="username" />
+              <Field id="username" type="text" name="username" />
               <ErrorMessage name="username" component="div" className="error" />
             </div>
             <div className="form-field">
               <label htmlFor="password">Password</label>
-              <Field type="password" name="password" />
+              <Field id="password" type="password" name="password" />
               <ErrorMessage name="password" component="div" className="error" />
             </div>
             <button type="submit" disabled={isSubmitting}>
@@ -70,3 +75,4 @@ const LoginForm = () => {
 };
 
 export default LoginForm;
+
