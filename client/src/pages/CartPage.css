@@ -18,7 +18,7 @@
   background-color: #eeeeee;
   border-radius: 10px;
   margin-bottom: 20px;
-  padding: 10px;
+  padding: 5px;
   border: 1px solid #b1b1b1;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s, box-shadow 0.2s;
@@ -77,4 +77,23 @@
   font-size: 18px;
   color: #666;
   margin-top: 20px;
+}
+
+.cart-item-actions {
+  display: flex;
+  align-items: center;
+}
+
+.checkout-button {
+  margin-left: 10px;
+  padding: 5px 10px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.checkout-button:hover {
+  background-color: #218838;
 }
