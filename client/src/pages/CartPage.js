@@ -17,7 +17,7 @@ function CartPage({ cartItems, onRemoveFromCart, onCheckout }) {
             />
             <div className="cart-item-details">
               <h3>{item.name}</h3>
-              <p>${item.price}</p>
+              <p>${item.price.toFixed(2)}</p>
             </div>
             <div className="cart-item-actions">
               <img
