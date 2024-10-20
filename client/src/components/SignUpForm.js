@@ -1,7 +1,7 @@
 import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import "./SignUpForm.css"; // Import the CSS
+import "./SignUpForm.css";
 
 // Validation schema
 const validationSchema = Yup.object().shape({
@@ -14,9 +14,9 @@ const validationSchema = Yup.object().shape({
   password_confirmation: Yup.string()
     .oneOf([Yup.ref("password"), null], "Passwords must match")
     .required("Password confirmation is required"),
-  bio: Yup.string() // Optional bio validation
+  bio: Yup.string()
     .max(100, "Bio cannot exceed 100 characters")
-    .required("Bio is required")
+    .required("Bio is required"),
 });
 
 const SignUpForm = () => {
@@ -28,37 +28,27 @@ const SignUpForm = () => {
           username: "",
           password: "",
           password_confirmation: "",
-          bio: "", // Initial value for bio
+          bio: "",
         }}
         validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
+        onSubmit={(values, { setSubmitting, resetForm, setFieldError }) => {
           fetch("/signup", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({
-              username: values.username,
-              password: values.password,
-              password_confirmation: values.password_confirmation,
-              bio: values.bio,
-            }),
+            body: JSON.stringify(values),
           })
             .then((response) => response.json())
             .then((data) => {
               if (data.error) {
-                alert(data.error.message || data.error);
+                // Check for field-specific errors and set them using setFieldError
+                Object.keys(data.error).forEach((field) => {
+                  setFieldError(field, data.error[field]);
+                });
               } else {
                 alert("User registered successfully");
-                // Clear the form fields after successful sign-up
-                resetForm({
-                  values: {
-                    username: "",
-                    password: "",
-                    password_confirmation: "",
-                    bio: "",
-                  },
-                });
+                resetForm();
               }
             })
             .catch((error) => {
@@ -71,17 +61,25 @@ const SignUpForm = () => {
           <Form>
             <div className="form-field">
               <label htmlFor="username">Username</label>
-              <Field type="text" name="username" autoComplete="username"/>
+              <Field type="text" name="username" autoComplete="username" />
               <ErrorMessage name="username" component="div" className="error" />
             </div>
             <div className="form-field">
               <label htmlFor="password">Password</label>
-              <Field type="password" name="password" autoComplete="new-password"/>
+              <Field
+                type="password"
+                name="password"
+                autoComplete="new-password"
+              />
               <ErrorMessage name="password" component="div" className="error" />
             </div>
             <div className="form-field">
               <label htmlFor="password_confirmation">Confirm Password</label>
-              <Field type="password" name="password_confirmation" autoComplete="new-password"/>
+              <Field
+                type="password"
+                name="password_confirmation"
+                autoComplete="new-password"
+              />
               <ErrorMessage
                 name="password_confirmation"
                 component="div"
