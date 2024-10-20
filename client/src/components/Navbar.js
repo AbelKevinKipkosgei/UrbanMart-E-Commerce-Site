@@ -1,9 +1,16 @@
-// components/Navbar.js
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./Navbar.css";
 
-function Navbar({cartItems, orders}) {
+function Navbar({ cartItems, orders, isLoggedIn, onLogout }) {
+  const navigate = useNavigate();
+
+  // Handle logout and redirect
+  const handleLogout = () => {
+    onLogout(); // Call the logout handler
+    navigate("/"); // Redirect to home page after logout
+  };
+
   return (
     <nav className="navbar">
       <div className="navbar-logo">
@@ -20,17 +27,26 @@ function Navbar({cartItems, orders}) {
           <Link to="/cart">Cart ({cartItems.length})</Link>
         </li>
         <li>
-          <Link to="/orders">Orders ({orders.length})</Link>{" "}
-          {/* Add Orders link */}
+          <Link to="/orders">Orders ({orders.length})</Link>
         </li>
       </ul>
       <div className="navbar-buttons">
-        <Link to="/login">
-          <button className="login-btn">Login</button>
-        </Link>
-        <Link to="/signup">
-          <button className="signup-btn">Sign Up</button>
-        </Link>
+        {isLoggedIn ? (
+          <>
+            <button className="logout-btn" onClick={handleLogout}>
+              Logout
+            </button>
+          </>
+        ) : (
+          <>
+            <Link to="/login">
+              <button className="login-btn">Login</button>
+            </Link>
+            <Link to="/signup">
+              <button className="signup-btn">Sign Up</button>
+            </Link>
+          </>
+        )}
       </div>
     </nav>
   );

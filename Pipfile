@@ -9,6 +9,8 @@ flask-sqlalchemy = "*"
 flask-cors = "*"
 bcrypt = "*"
 passlib = "*"
+flask-login = "*"
+flask-admin = "*"
 
 [dev-packages]
 

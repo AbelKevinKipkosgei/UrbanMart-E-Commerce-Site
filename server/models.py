@@ -1,3 +1,4 @@
+from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.ext.hybrid import hybrid_property
@@ -13,7 +14,7 @@ order_product = db.Table(
     db.Column('order_id', db.Integer, db.ForeignKey('orders.id'))
 )
 
-class User(db.Model, SerializerMixin):
+class User(db.Model, UserMixin, SerializerMixin):
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -45,6 +46,15 @@ class User(db.Model, SerializerMixin):
     def authenticate(self, password):
         # Verify the password using werkzeug.security
         return check_password_hash(self._password_hash, password)
+    
+    # Flask-Login method to determine if the user is active
+    @property
+    def is_active(self):
+        return True
+
+    # Flask-Login method to get the user ID
+    def get_id(self):
+        return str(self.id)
 
     def __repr__(self):
         return f'User ID: {self.id}, Username: {self.username}, Role: {self.role}>'
