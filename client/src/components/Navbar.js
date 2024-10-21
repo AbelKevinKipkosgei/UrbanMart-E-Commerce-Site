@@ -2,7 +2,7 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./Navbar.css";
 
-function Navbar({ cartItems, orders, isLoggedIn, onLogout }) {
+function Navbar({ cartItems, orders, isLoggedIn, onLogout, userRole }) {
   const navigate = useNavigate();
 
   // Handle logout and redirect
@@ -17,6 +17,9 @@ function Navbar({ cartItems, orders, isLoggedIn, onLogout }) {
         <h1>UrbanMart</h1>
       </div>
       <ul className="navbar-links">
+        <li>
+          <Link to="/admin">Admin</Link>
+        </li>
         <li>
           <Link to="/">Home</Link>
         </li>
