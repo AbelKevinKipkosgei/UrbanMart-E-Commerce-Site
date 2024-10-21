@@ -237,13 +237,13 @@ class PromoteUserResource(Resource):
 api.add_resource(SignupResource, '/signup')
 api.add_resource(UserResource, '/admin/users')
 api.add_resource(ProductResource, '/admin/products')
+api.add_resource(PromoteUserResource, '/admin/promote/<int:user_id>')
 api.add_resource(HomeResource, '/')
 api.add_resource(PublicProductResource, '/products')
 api.add_resource(OrderResource, '/orders')
 api.add_resource(CartResource, '/cart')
 api.add_resource(AuthResource, '/login', endpoint='login')
 api.add_resource(LogoutResource, '/logout')
-api.add_resource(PromoteUserResource, '/admin/promote/<int:user_id>')
 api.add_resource(AuthStatus, '/user/authenticate')
 
 # Error handling
