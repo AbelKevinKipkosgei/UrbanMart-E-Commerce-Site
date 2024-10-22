@@ -11,7 +11,7 @@ function ProductCard({product, onAddToCart}) {
       />
       <h3 className="product-name">{product.name}</h3>
       <p className="product-description">${product.description}</p>
-      <p className="product-price">${product.price}</p>
+      <p className="product-price">${product.price.toFixed(2)}</p>
       <img
         src="/add-to-cart.png"
         alt="Add to cart"

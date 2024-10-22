@@ -1,0 +1,33 @@
+.admin-page {
+  padding: 20px;
+}
+
+.admin-heading {
+  text-align: left; 
+  margin-bottom: 10px;
+}
+
+.button-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 15px;
+  margin: 20px 0; 
+}
+
+.button-tile {
+  background-color: #007bff; 
+  color: white;
+  padding: 20px; 
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  text-align: center; 
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.button-tile:hover {
+  background-color: #0056b3;
+}

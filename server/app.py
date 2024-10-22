@@ -1,18 +1,16 @@
-from flask import jsonify, make_response, request, session
+from flask import jsonify, make_response, request
 from flask_login import LoginManager, login_user, logout_user, current_user, login_required
-from flask_admin import Admin
 from flask_restful import Resource
 from models import User, Product, Order
 from config import app, db, api
+
+app.secret_key = 'jf}hbYT6*_mnEy8n}SG=>xcfD5h78Di6'
 
 # Initialize Flask-Login
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 login_manager.login_message = "Please log in to access this page."
-
-# Initialize Flask-Admin
-admin = Admin(app, name='Admin Panel', template_mode='bootstrap3')
 
 # Load user for Flask-Login
 @login_manager.user_loader
@@ -64,36 +62,14 @@ class SignupResource(Resource):
         db.session.commit()
         return make_response(jsonify({'message': 'Signup successful!'}), 201)
 
-
 # User Resource
 class UserResource(Resource):
+    @login_required
     def get(self):
-        if not current_user.is_authenticated or current_user.role != 'admin':
+        if current_user.role != 'admin':
             return make_response(jsonify({'error': 'Unauthorized access'}), 403)
         users = [user.to_dict() for user in User.query.all()]
         return make_response(jsonify(users), 200)
-
-    def post(self):
-        data = request.get_json()
-        if 'username' not in data or 'password' not in data or 'password_confirmation' not in data:
-            return make_response(jsonify({'error': 'Missing fields'}), 422)
-
-        if data['password'] != data['password_confirmation']:
-            return make_response(jsonify({'error': 'Passwords do not match'}), 422)
-
-        if User.query.filter_by(username=data['username']).first():
-            return make_response(jsonify({'error': 'Username already exists'}), 400)
-
-        new_user = User(
-            username=data['username'],
-            role=data.get('role', 'user'),
-            bio=data.get('bio', 'A new user finding their way.')
-        )
-        new_user.password = data['password']
-
-        db.session.add(new_user)
-        db.session.commit()
-        return make_response(jsonify({'message': 'Signup successful!'}), 201)
 
 # Product Resource
 class ProductResource(Resource):
@@ -149,12 +125,12 @@ class ProductResource(Resource):
         db.session.delete(product)
         db.session.commit()
         return make_response(jsonify({'message': 'Product deleted'}), 200)
-    
+
+# Home Resource
 class HomeResource(Resource):
     def get(self):
         return make_response(jsonify({'message': 'Welcome to the API'}), 200)
 
-  
 # Public Product Resource (Accessible to Everyone)
 class PublicProductResource(Resource):
     def get(self):
@@ -180,47 +156,44 @@ class CartResource(Resource):
 # User Login Status Authentication
 class AuthStatus(Resource):
     def get(self):
-        if 'user_id' in session:
-            # If the user is authenticated, get the user's role
-            user_role = session.get('role', 'user')
-
+        if current_user.is_authenticated:
             # Return authenticated status along with user's role
-            return {"authenticated": True, "role": user_role}, 200
+            return {"authenticated": True, "role": current_user.role}, 200
         else:
-            # If the user is not authenticated, return a 401 Unauthorized
+            # If the user is not authenticated
             return {"authenticated": False, "message": "User not authenticated"}, 401
 
-# Login and Logout Endpoints
-class AuthResource(Resource):
+# User Login     
+class LoginResource(Resource):
     def post(self):
         data = request.get_json()
 
         # Validate incoming data
-        if not data or 'username' not in data or 'password' not in data:
-            return make_response(jsonify({'error': 'Missing fields'}), 422)
+        if not data:
+            return make_response(jsonify({'error': 'Request data is missing'}), 400)
+        if 'username' not in data or 'password' not in data:
+            return make_response(jsonify({'error': 'Username and password are required'}), 422)
 
         user = User.query.filter_by(username=data['username']).first()
 
+        # Check if the user exists and if the password is correct
         if not user or not user.authenticate(data['password']):
-            return make_response(jsonify({'error': 'Invalid credentials'}), 401)
+            return make_response(jsonify({'error': 'Invalid username or password'}), 401)
 
-        # Log in the user and set the session
+        # Log in the user
         login_user(user)
 
-        # Store the user ID in the session for persistence
-        session['user_id'] = user.id
-
-        return make_response(jsonify({'message': 'Login successful!'}), 200)
+        # Provide a success response with user information
+        return make_response(jsonify({
+            'message': 'Login successful!',
+            'user_id': user.id,
+            'role': user.role
+        }), 200)
 
 class LogoutResource(Resource):
     @login_required
     def post(self):
         logout_user()
-
-        # Clear any session data, user_id and role
-        session.pop('user_id', None)
-        session.pop('role', None)
-
         return make_response(jsonify({'message': 'Logout successful!'}), 200)
 
 # Admin route to promote a user
@@ -237,17 +210,32 @@ class PromoteUserResource(Resource):
         user.role = 'admin'
         db.session.commit()
         return make_response(jsonify({'message': f'User {user.username} has been promoted to admin.'}), 200)
+    
+class DemoteUserResource(Resource):
+    @login_required
+    def post(self, user_id):
+        if current_user.role != 'admin':
+            return make_response(jsonify({'error': 'Unauthorized access'}), 403)
+
+        user = User.query.get(user_id)
+        if not user:
+            return make_response(jsonify({'error': 'User not found'}), 404)
+
+        user.role = 'user'
+        db.session.commit()
+        return make_response(jsonify({'message': f'Admin {user.username} has been demoted to user.'}), 200)
 
 # Registering the resources with Flask-RESTful
 api.add_resource(SignupResource, '/signup')
 api.add_resource(UserResource, '/admin/users')
 api.add_resource(ProductResource, '/admin/products')
 api.add_resource(PromoteUserResource, '/admin/promote/<int:user_id>')
+api.add_resource(DemoteUserResource, '/admin/demote/<int:user_id>')
 api.add_resource(HomeResource, '/')
 api.add_resource(PublicProductResource, '/products')
 api.add_resource(OrderResource, '/orders')
 api.add_resource(CartResource, '/cart')
-api.add_resource(AuthResource, '/login', endpoint='login')
+api.add_resource(LoginResource, '/login', endpoint='login')
 api.add_resource(LogoutResource, '/logout')
 api.add_resource(AuthStatus, '/user/authenticate')
 

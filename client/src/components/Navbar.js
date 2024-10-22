@@ -2,13 +2,13 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./Navbar.css";
 
-function Navbar({ cartItems, orders, isLoggedIn, onLogout, userRole }) {
+function Navbar({ cartItems, orders, isLoggedIn, onLogout }) {
   const navigate = useNavigate();
 
   // Handle logout and redirect
   const handleLogout = () => {
-    onLogout(); // Call the logout handler
-    navigate("/"); // Redirect to home page after logout
+    onLogout();
+    navigate("/");
   };
 
   return (
