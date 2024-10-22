@@ -1,0 +1,81 @@
+
+.create-product-card {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 30px; 
+  margin: 20px auto;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  transition: transform 0.2s;
+}
+
+.create-product-card:hover {
+  transform: translateY(-5px);
+}
+
+.create-product-title {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  text-align: center;
+  color: #333;
+  font-weight: bold;
+}
+
+.create-product-form .form-group {
+  margin-bottom: 20px;
+}
+
+.create-product-form input,
+.create-product-form textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 16px;
+  transition: border-color 0.3s;
+}
+
+.create-product-form input:focus,
+.create-product-form textarea:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.create-product-form button {
+  width: 100%;
+  background-color: #007bff;
+  color: white;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.create-product-form button:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px);
+}
+
+.create-product-message {
+  margin-top: 15px; 
+  font-size: 15px; 
+  text-align: center; 
+  padding: 10px; 
+  border-radius: 6px; 
+  transition: opacity 0.5s ease; 
+}
+
+.create-product-message.success {
+  color: #28a745;
+  background-color: #d4edda; 
+  border: 1px solid #c3e6cb; 
+}
+
+.create-product-message.error {
+  color: #dc3545;
+  background-color: #f8d7da; 
+  border: 1px solid #f5c6cb; 
+}
