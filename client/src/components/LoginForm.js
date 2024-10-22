@@ -1,17 +1,16 @@
 import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom";
 import "./LoginForm.css";
 
-// Validation schema for login
 const validationSchema = Yup.object().shape({
   username: Yup.string().required("Username is required"),
   password: Yup.string().required("Password is required"),
 });
 
 const LoginForm = ({ onLogin }) => {
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
 
   return (
     <div className="form-container">
@@ -23,12 +22,12 @@ const LoginForm = ({ onLogin }) => {
         }}
         validationSchema={validationSchema}
         onSubmit={(values, { setSubmitting, resetForm, setErrors }) => {
-          // Fetch API for posting login data
           fetch("/login", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
+            credentials: "include",
             body: JSON.stringify({
               username: values.username,
               password: values.password,
@@ -40,9 +39,9 @@ const LoginForm = ({ onLogin }) => {
                 setErrors({ username: "Invalid username or password." });
               } else {
                 alert("Login successful");
-                onLogin(); // Call onLogin for any additional login logic
+                onLogin(data.role); // Pass the user role to the onLogin function
                 resetForm();
-                navigate("/"); // Redirect to the home page
+                navigate("/");
               }
             })
             .catch((error) => {
@@ -75,4 +74,3 @@ const LoginForm = ({ onLogin }) => {
 };
 
 export default LoginForm;
-
