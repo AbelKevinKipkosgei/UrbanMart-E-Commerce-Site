@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import "./AllUsers.css"; // Import CSS file for styling
+import "./AllUsers.css";
 
 const AllUsers = () => {
   const [users, setUsers] = useState([]);
@@ -34,6 +34,48 @@ const AllUsers = () => {
     fetchUsers();
   }, [navigate]);
 
+  // Function to handle promoting a user
+  const handlePromoteUser = async (userId) => {
+    try {
+      const response = await fetch(`/admin/promote/${userId}`, {
+        method: "POST",
+        credentials: "include",
+      });
+      if (response.ok) {
+        // Refresh the user list after promoting
+        const updatedUsers = users.map((user) =>
+          user.id === userId ? { ...user, role: "admin" } : user
+        );
+        setUsers(updatedUsers);
+      } else {
+        throw new Error("Error promoting user");
+      }
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  // Function to handle demoting a user
+  const handleDemoteUser = async (userId) => {
+    try {
+      const response = await fetch(`/admin/demote/${userId}`, {
+        method: "POST",
+        credentials: "include",
+      });
+      if (response.ok) {
+        // Refresh the user list after demoting
+        const updatedUsers = users.map((user) =>
+          user.id === userId ? { ...user, role: "user" } : user
+        );
+        setUsers(updatedUsers);
+      } else {
+        throw new Error("Error demoting user");
+      }
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
   if (error) {
     return <div className="error-message">{error}</div>;
   }
@@ -41,26 +83,37 @@ const AllUsers = () => {
   return (
     <div className="users-container">
       <h1 className="users-title">All Users</h1>
-      <table className="users-table">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Username</th>
-            <th>Role</th>
-            <th>Bio</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((user) => (
-            <tr key={user.id}>
-              <td>{user.id}</td>
-              <td>{user.username}</td>
-              <td>{user.role}</td>
-              <td>{user.bio}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      {users.map((user) => (
+        <div key={user.id} className="users-card">
+          <div className="user-info">
+            <div className="user-row">
+              <span className="label">ID:</span> <span>{user.id}</span>
+            </div>
+            <div className="user-row">
+              <span className="label">Username:</span>{" "}
+              <span>{user.username}</span>
+            </div>
+            <div className="user-row">
+              <span className="label">Role:</span> <span>{user.role}</span>
+            </div>
+            <div className="user-row">
+              <span className="label">Bio:</span> <span>{user.bio}</span>
+            </div>
+          </div>
+          <div className="user-actions">
+            {user.id !== 1 && // Check if not the super admin
+              (user.role === "admin" ? (
+                <button onClick={() => handleDemoteUser(user.id)}>
+                  Demote
+                </button>
+              ) : (
+                <button onClick={() => handlePromoteUser(user.id)}>
+                  Promote
+                </button>
+              ))}
+          </div>
+        </div>
+      ))}
     </div>
   );
 };
