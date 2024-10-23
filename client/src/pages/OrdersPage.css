@@ -1,6 +1,6 @@
 .orders-page {
   padding: 20px;
-  max-width: 800px;
+  max-width: 900px;
   margin: 0 auto;
 }
 
@@ -31,8 +31,8 @@
 }
 
 .order-item-image {
-  width: 80px;
-  height: 80px;
+  width: 100px;
+  height: 90px;
   border-radius: 8px;
   object-fit: cover;
   margin-right: 15px;

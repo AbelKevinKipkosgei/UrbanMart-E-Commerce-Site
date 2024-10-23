@@ -1,52 +1,78 @@
+// AdminPage.js
 import React from "react";
-import "./AdminPage.css";
-import { useNavigate } from "react-router-dom";
-
+import { useNavigate, Outlet, useLocation } from "react-router-dom";
+import "./AdminPage.css"; // Assuming you have CSS for styling
 
 const AdminPage = () => {
   const navigate = useNavigate();
-  const handleViewAllUsers = ()  => {
-    navigate("/admin/allusers");
-  }
-  const handleViewUserOrders = () => {
-    navigate("/admin/userorders");
-  }
-  const handleViewUserProducts = () => {
-    navigate("/admin/userproducts");
-  }
-  const handlePromoteUser = () => {
-    navigate("/admin/promoteuser");
-  }
-  const handleDemoteUser = () => {
-    navigate("/admin/demoteuser");
-  }
+  const location = useLocation();
+
+  // Function to check active link
+  const isActive = (path) => location.pathname === path;
+
+  // Handlers for navigation
+  const handleViewAllUsers = () => navigate("/admin/allusers");
+  const handlePromoteUser = () => navigate("/admin/promoteuser");
+  const handleDemoteUser = () => navigate("/admin/demoteuser");
+  const handleViewUserOrders = () => navigate("/admin/userorders");
+  const handleViewUserProducts = () => navigate("/admin/userproducts");
+  const handleCreateProduct = () => navigate("/admin/createproduct");
+  const handleEditProduct = () => navigate("/admin/editproduct");
+
   return (
     <div className="admin-page">
-      <h2 className="admin-heading">Users</h2>
-      <div className="button-grid">
-        <div className="button-tile" onClick={handleViewAllUsers}>
-          All Users
-        </div>
-        <div className="button-tile" onClick={handlePromoteUser}>
-          Promote User
-        </div>
-        <div className="button-tile" onClick={handleDemoteUser}>
-          Demote User
-        </div>
-        <div className="button-tile" onClick={handleViewUserOrders}>
-          User Orders
-        </div>
-        <div className="button-tile" onClick={handleViewUserProducts}>
-          User Products
-        </div>
-      </div>
+      {/* Sidebar */}
+      <nav className="sidebar">
+        <h2 className="sidebar-heading">Admin Dashboard</h2>
+        <ul className="sidebar-nav">
+          <li
+            className={isActive("/admin/allusers") ? "active" : ""}
+            onClick={handleViewAllUsers}
+          >
+            All Users
+          </li>
+          <li
+            className={isActive("/admin/promoteuser") ? "active" : ""}
+            onClick={handlePromoteUser}
+          >
+            Promote User
+          </li>
+          <li
+            className={isActive("/admin/demoteuser") ? "active" : ""}
+            onClick={handleDemoteUser}
+          >
+            Demote User
+          </li>
+          <li
+            className={isActive("/admin/userorders") ? "active" : ""}
+            onClick={handleViewUserOrders}
+          >
+            User Orders
+          </li>
+          <li
+            className={isActive("/admin/userproducts") ? "active" : ""}
+            onClick={handleViewUserProducts}
+          >
+            User Products
+          </li>
+          <li
+            className={isActive("/admin/createproduct") ? "active" : ""}
+            onClick={handleCreateProduct}
+          >
+            Create Product
+          </li>
+          <li
+            className={isActive("/admin/editproduct") ? "active" : ""}
+            onClick={handleEditProduct}
+          >
+            Edit Product
+          </li>
+        </ul>
+      </nav>
 
-      <h2 className="admin-heading">Products</h2>
-      <div className="button-grid">
-        <div className="button-tile">All Products</div>
-        <div className="button-tile">Create Product</div>
-        <div className="button-tile">Edit Product</div>
-        <div className="button-tile">Delete Product</div>
+      {/* Main Content */}
+      <div className="main-content">
+        <Outlet /> {/* This will render the nested admin routes */}
       </div>
     </div>
   );
