@@ -14,7 +14,7 @@ def seed_data():
 
     # Create lists of users and products
     users = [
-        User(username='abel_soi', role='admin', bio='I am the ADMINISTRATOR.'),
+        User(username='abel_soi', role='admin', bio='SUPER USER'),
         User(username='john_doe', bio='A curious buyer.'),
         User(username='jane_smith', bio='Loves gadgets and electronics.'),
         User(username='alice_wonder', bio='Tech enthusiast and frequent shopper.')
@@ -27,12 +27,12 @@ def seed_data():
     users[3].password = 'alicepass789'
 
     products = [
-        Product(name='Chrysanthemum', price=5.30, description='A beautiful Chrysanthemum flower', image_url='http://127.0.0.1:5555/static/images/products/chrysanthemum.jpg'),
-        Product(name='Hibiscus', price=4.50, description='A lovely Hibiscus flower', image_url='http://127.0.0.1:5555/static/images/products/hibiscus.jpg'),
-        Product(name='Lotus', price=6.00, description='A stunning Lotus flower', image_url='http://127.0.0.1:5555/static/images/products/lotus.jpg'),
-        Product(name='Marguerite', price=3.75, description='A charming Marguerite flower', image_url='http://127.0.0.1:5555/static/images/products/marguerite.jpg'),
-        Product(name='Rose', price=7.50, description='A beautiful Rose flower', image_url='http://127.0.0.1:5555/static/images/products/rose.jpg'),
-        Product(name='Red Poppy', price=2.50, description='A lovely Red Poppy flower', image_url='http://127.0.0.1:5555/static/images/products/redpoppy.jpg')
+        Product(name='Alienware m18 R2 Gaming Laptop', price=2999.99, description='Intel® Core™ i9 14900HX (Up to NVIDIA® GeForce RTX™ 4090)', image_url='https://i.dell.com/is/image/DellContent/content/dam/ss2/product-images/dell-client-products/notebooks/alienware-notebooks/alienware-m18-mlk/media-gallery/hd/laptop-alienware-m18-r2-hd-perkey-intel-bk-gallery-2.psd?fmt=png-alpha&pscan=auto&scl=1&hei=402&wid=522&qlt=100,1&resMode=sharp2&size=522,402&chrss=full'),
+        Product(name='Alienware x16 R2 Gaming Laptop', price=2599.99, description='Intel® Core™ Ultra 9 185H (NVIDIA® GeForce RTX™ 4070)', image_url='https://i.dell.com/is/image/DellContent/content/dam/ss2/product-images/dell-client-products/notebooks/alienware-notebooks/alienwar-x16-mlk/gallery/notebook-alienware-x16-r2-gray-gallery-12.psd?fmt=png-alpha&pscan=auto&scl=1&hei=402&wid=681&qlt=100,1&resMode=sharp2&size=681,402&chrss=full'),
+        Product(name='Alienware Aurora R16 Gaming Desktop', price=4694.99, description='Intel® Core™ i9 14900KF (NVIDIA® GeForce RTX™ 4090)', image_url='https://i.dell.com/is/image/DellContent/content/dam/ss2/product-images/dell-client-products/desktops/alienware-desktops/alienware-aurora-r16/media-gallery/liquid/desktop-aw-r16-bk-lqd-cooling-gallery-3.psd?fmt=png-alpha&pscan=auto&scl=1&wid=4500&hei=3800&qlt=100,1&resMode=sharp2&size=4500,3800&chrss=full&imwidth=5000'),
+        Product(name='XPS Desktop', price=1949.99,description='14th Gen Intel® Core™ i9-14900 (NVIDIA® GeForce RTX™ 4060 Ti)', image_url='https://i.dell.com/is/image/DellContent/content/dam/ss2/product-images/dell-client-products/desktops/xps-desktops/xps-8960-tracer/media-gallery/gray/xs8960-csy-00015rf-gy.psd?fmt=png-alpha&pscan=auto&scl=1&wid=2189&hei=3377&qlt=100,1&resMode=sharp2&size=2189,3377&chrss=full&imwidth=5000'),
+        Product(name='Alienware Pro Wireless Gaming Headset', price=229.99, description='Professional-grade wireless gaming headset', image_url='https://i.dell.com/is/image/DellContent/content/dam/ss2/product-images/dell-client-products/peripherals/headphones/aw-pro-wireless-headset/media-gallery/dark-side-of-the-moon/headset-aw-pro-bk-gallery-1.psd?fmt=png-alpha&pscan=auto&scl=1&hei=476&wid=395&qlt=100,1&resMode=sharp2&size=395,476&chrss=full'),
+        Product(name='Logitech G920 Driving Force Racing Wheel', price=299.99, description='G920 Driving Force is the definitive sim racing wheel', image_url='https://snpi.dell.com/snp/images/products/large/en-us~A8543273/A8543273.jpg')
     ]
 
     # Step 2: Add users and products to the session
