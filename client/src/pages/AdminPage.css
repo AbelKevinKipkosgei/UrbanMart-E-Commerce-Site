@@ -1,33 +1,60 @@
+body {
+  font-family: 'Roboto', sans-serif;
+  margin: 0;
+  background-color: #f4f4f4;
+}
+
 .admin-page {
-  padding: 20px;
+  display: flex;
 }
 
-.admin-heading {
-  text-align: left; 
-  margin-bottom: 10px;
-}
-
-.button-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 15px;
-  margin: 20px 0; 
-}
-
-.button-tile {
-  background-color: #007bff; 
+.sidebar {
+  width: 200px;
+  background-color: #4e4e4e;
   color: white;
-  padding: 20px; 
+  padding: 20px;
+  position: fixed;
+  height: 100vh;
+  transition: width 0.2s ease;
+}
+
+.sidebar-heading {
+  font-size: 1.5em;
+  margin-bottom: 20px;
+}
+
+.sidebar-nav {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar-nav li {
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+  margin: 10px 0;
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.3s;
-  display: flex; 
-  align-items: center; 
-  justify-content: center; 
-  text-align: center; 
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.button-tile:hover {
-  background-color: #0056b3;
+.sidebar-nav li:hover {
+  background-color: #adadad;
+}
+
+.sidebar-nav .active {
+  background-color: #12a0ff;
+}
+
+.sidebar-icon {
+  margin-right: 10px;
+  font-size: 1.2em;
+}
+
+.main-content {
+  margin-left: 250px;
+  padding: 20px;
+  flex: 1;
+  background-color: white;
+  min-height: 100vh;
 }

@@ -1,3 +1,7 @@
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #f4f4f4;
+}
 
 .users-container {
   padding: 20px;
@@ -8,41 +12,67 @@
 .users-title {
   text-align: center;
   margin-bottom: 20px;
-  font-size: 2em;
+  font-size: 2.5em;
   color: #333;
 }
 
-.users-table {
-  width: 100%;
-  border-collapse: collapse;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  background-color: #f9f9f9;
+.users-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  background: white;
+  margin-bottom: 15px;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.users-table thead {
-  background-color: #4caf50;
-  color: white;
+.users-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
-.users-table th,
-.users-table td {
-  padding: 12px 15px;
-  text-align: left;
-  border: 1px solid #ddd;
+.user-info {
+  flex: 1;
 }
 
-.users-table tr:nth-child(even) {
-  background-color: #f2f2f2;
+.user-row {
+  display: flex;
+  justify-content: flex-start;
+  margin: 5px 0;
 }
 
-.users-table tr:hover {
-  background-color: #d6d6d6;
-  cursor: pointer;
-}
-
-.users-table th {
+.label {
   font-weight: bold;
-  font-size: 1.1em;
+  margin-right: 5px;
+  color: #555;
+}
+
+.user-actions {
+  display: flex;
+  align-items: center;
+}
+
+button {
+  padding: 10px 15px;
+  font-size: 1em;
+  color: white;
+  background-color: #4caf50;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+button:hover {
+  background-color: #45a049;
+  transform: translateY(-2px);
+}
+
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
 }
 
 .error-message {
