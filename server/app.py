@@ -95,24 +95,6 @@ class ProductResource(Resource):
         return make_response(jsonify(new_product.to_dict()), 201)
 
     @login_required
-    def put(self):
-        if current_user.role != 'admin':
-            return make_response(jsonify({'error': 'Unauthorized access'}), 403)
-
-        data = request.get_json()
-        product = Product.query.get(data['id'])
-        if not product:
-            return make_response(jsonify({'error': 'Product not found'}), 404)
-
-        product.name = data.get('name', product.name)
-        product.price = data.get('price', product.price)
-        product.image_url = data.get('image_url', product.image_url)
-        product.description = data.get('description', product.description)
-
-        db.session.commit()
-        return make_response(jsonify(product.to_dict()), 200)
-
-    @login_required
     def delete(self):
         if current_user.role != 'admin':
             return make_response(jsonify({'error': 'Unauthorized access'}), 403)
@@ -125,6 +107,26 @@ class ProductResource(Resource):
         db.session.delete(product)
         db.session.commit()
         return make_response(jsonify({'message': 'Product deleted'}), 200)
+    
+# Edit Product Resource
+class EditProduct(Resource):
+    @login_required
+    def put(self, product_id):
+        if current_user.role != 'admin':
+            return make_response(jsonify({'error': 'Unauthorized access'}), 403)
+
+        product = Product.query.get(product_id)
+        if not product:
+            return make_response(jsonify({'error': 'Product not found'}), 404)
+
+        data = request.get_json()
+        product.name = data.get('name', product.name)
+        product.price = data.get('price', product.price)
+        product.image_url = data.get('image_url', product.image_url)
+        product.description = data.get('description', product.description)
+
+        db.session.commit()
+        return make_response(jsonify(product.to_dict()), 200)
 
 # Home Resource
 class HomeResource(Resource):
@@ -229,6 +231,7 @@ class DemoteUserResource(Resource):
 api.add_resource(SignupResource, '/signup')
 api.add_resource(UserResource, '/admin/users')
 api.add_resource(ProductResource, '/admin/products')
+api.add_resource(EditProduct, '/admin/products/<int:product_id>')
 api.add_resource(PromoteUserResource, '/admin/promote/<int:user_id>')
 api.add_resource(DemoteUserResource, '/admin/demote/<int:user_id>')
 api.add_resource(HomeResource, '/')
