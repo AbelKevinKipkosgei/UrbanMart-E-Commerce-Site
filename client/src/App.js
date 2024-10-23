@@ -17,6 +17,8 @@ import UserOrders from "./pages/UserOrders";
 import UserProducts from "./pages/UserProducts";
 import PromoteUser from "./pages/PromoteUser";
 import DemoteUser from "./pages/DemoteUser";
+import CreateProduct from "./pages/CreateProduct";
+
 
 function App() {
   const [cartItems, setCartItems] = useState(() => {
@@ -141,7 +143,7 @@ function App() {
           orders={orders}
           isLoggedIn={isLoggedIn}
           onLogout={handleLogout}
-        ></Layout>
+        />
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route
@@ -150,7 +152,6 @@ function App() {
           />
           <Route path="/login" element={<Login onLogin={handleLogin} />} />
           <Route path="/signup" element={<SignUp />} />
-
           <Route
             path="/cart"
             element={
@@ -173,53 +174,21 @@ function App() {
           />
           <Route path="/logout" element={<Logout />} />
           <Route
-            path="/admin"
+            path="/admin/*"
             element={
               <AdminProtectedRoute isLoggedIn={isLoggedIn} userRole={userRole}>
                 <AdminPage />
               </AdminProtectedRoute>
             }
-          />
-          <Route
-            path="/admin/allusers"
-            element={
-              <AdminProtectedRoute isLoggedIn={isLoggedIn} userRole={userRole}>
-                <AllUsers />
-              </AdminProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/userorders"
-            element={
-              <AdminProtectedRoute isLoggedIn={isLoggedIn} userRole={userRole}>
-                <UserOrders />
-              </AdminProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/userproducts"
-            element={
-              <AdminProtectedRoute isLoggedIn={isLoggedIn} userRole={userRole}>
-                <UserProducts />
-              </AdminProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/promoteuser"
-            element={
-              <AdminProtectedRoute isLoggedIn={isLoggedIn} userRole={userRole}>
-                <PromoteUser />
-              </AdminProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/demoteuser"
-            element={
-              <AdminProtectedRoute isLoggedIn={isLoggedIn} userRole={userRole}>
-                <DemoteUser />
-              </AdminProtectedRoute>
-            }
-          />
+          >
+            {/* Nested routes inside AdminPage */}
+            <Route path="allusers" element={<AllUsers />} />
+            <Route path="userorders" element={<UserOrders />} />
+            <Route path="userproducts" element={<UserProducts />} />
+            <Route path="promoteuser" element={<PromoteUser />} />
+            <Route path="demoteuser" element={<DemoteUser />} />
+            <Route path="createproduct" element={<CreateProduct />} />
+          </Route>
         </Routes>
       </Router>
     </div>
