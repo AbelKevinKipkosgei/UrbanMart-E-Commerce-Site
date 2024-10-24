@@ -20,8 +20,8 @@ def load_user(user_id):
 # Middleware to check login status for routes requiring authentication
 @app.before_request
 def check_login_status():
-    unrestricted_routes = ['login', 'signup', 'home', 'publicproductresource', 'static']
-    if request.endpoint not in unrestricted_routes and not current_user.is_authenticated:
+    restricted_routes = ['cart', 'orders']
+    if request.endpoint in restricted_routes and not current_user.is_authenticated:
         return make_response(jsonify({'error': 'Unauthorized access'}), 401)
 
 # Signup Resource
@@ -32,21 +32,23 @@ class SignupResource(Resource):
         # Validate incoming data
         errors = {}
 
-        if not data.get('username'):
+        if 'username' not in data or not data['username']:
             errors['username'] = 'Username is required.'
-        if not data.get('password'):
+        if 'password' not in data or not data['password']:
             errors['password'] = 'Password is required.'
-        if not data.get('password_confirmation'):
+        if 'password_confirmation' not in data or not data['password_confirmation']:
             errors['password_confirmation'] = 'Password confirmation is required.'
 
         if errors:
             return make_response(jsonify({'error': errors}), 422)
 
         if data['password'] != data['password_confirmation']:
-            return make_response(jsonify({'error': {'password_confirmation': 'Passwords do not match.'}}), 422)
+            errors['password_confirmation'] = 'Passwords do not match.'
+            return make_response(jsonify({'error': errors}), 422)
 
         if User.query.filter_by(username=data['username']).first():
-            return make_response(jsonify({'error': {'username': 'Username already exists.'}}), 400)
+            errors['username'] = 'Username already exists.'
+            return make_response(jsonify({'error': errors}), 400)
 
         # Create new user
         new_user = User(
@@ -82,14 +84,11 @@ class ProductResource(Resource):
             return make_response(jsonify({'error': 'Unauthorized access'}), 403)
 
         data = request.get_json()
-        if not data.get('name') or not data.get('price') or not data.get('image_url'):
-            return make_response(jsonify({'error': 'Product name, price, and image URL are required.'}), 400)
-
         new_product = Product(
             name=data['name'],
             price=data['price'],
             image_url=data['image_url'],
-            description=data.get('description', '')
+            description=data['description']
         )
         db.session.add(new_product)
         db.session.commit()
@@ -108,6 +107,96 @@ class ProductResource(Resource):
         db.session.delete(product)
         db.session.commit()
         return make_response(jsonify({'message': 'Product deleted'}), 200)
+    
+# Edit Product Resource
+class EditProduct(Resource):
+    @login_required
+    def put(self, product_id):
+        if current_user.role != 'admin':
+            return make_response(jsonify({'error': 'Unauthorized access'}), 403)
+
+        product = Product.query.get(product_id)
+        if not product:
+            return make_response(jsonify({'error': 'Product not found'}), 404)
+
+        data = request.get_json()
+        product.name = data.get('name', product.name)
+        product.price = data.get('price', product.price)
+        product.image_url = data.get('image_url', product.image_url)
+        product.description = data.get('description', product.description)
+
+        db.session.commit()
+        return make_response(jsonify(product.to_dict()), 200)
+
+# Home Resource
+class HomeResource(Resource):
+    def get(self):
+        return make_response(jsonify({'message': 'Welcome to the API'}), 200)
+
+# Public Product Resource (Accessible to Everyone)
+class PublicProductResource(Resource):
+    def get(self):
+        products = [product.to_dict() for product in Product.query.all()]
+        return make_response(jsonify(products), 200)
+
+# Order Resource
+class OrderResource(Resource):
+    @login_required
+    def get(self):
+        user_orders = Order.query.filter_by(user_id=current_user.id).all()
+        orders_data = [order.to_dict() for order in user_orders]
+        return make_response(jsonify(orders_data), 200)
+
+# Cart Resource
+class CartResource(Resource):
+    @login_required
+    def get(self):
+        user_orders = Order.query.filter_by(user_id=current_user.id).all()
+        cart_items = [order.to_dict() for order in user_orders]
+        return make_response(jsonify(cart_items), 200)
+
+# User Login Status Authentication
+class AuthStatus(Resource):
+    def get(self):
+        if current_user.is_authenticated:
+            # Return authenticated status along with user's role
+            return {"authenticated": True, "role": current_user.role}, 200
+        else:
+            # If the user is not authenticated
+            return {"authenticated": False, "message": "User not authenticated"}, 401
+
+# User Login     
+class LoginResource(Resource):
+    def post(self):
+        data = request.get_json()
+
+        # Validate incoming data
+        if not data:
+            return make_response(jsonify({'error': 'Request data is missing'}), 400)
+        if 'username' not in data or 'password' not in data:
+            return make_response(jsonify({'error': 'Username and password are required'}), 422)
+
+        user = User.query.filter_by(username=data['username']).first()
+
+        # Check if the user exists and if the password is correct
+        if not user or not user.authenticate(data['password']):
+            return make_response(jsonify({'error': 'Invalid username or password'}), 401)
+
+        # Log in the user
+        login_user(user)
+
+        # Provide a success response with user information
+        return make_response(jsonify({
+            'message': 'Login successful!',
+            'user_id': user.id,
+            'role': user.role
+        }), 200)
+
+class LogoutResource(Resource):
+    @login_required
+    def post(self):
+        logout_user()
+        return make_response(jsonify({'message': 'Logout successful!'}), 200)
 
 # Admin route to promote a user
 class PromoteUserResource(Resource):
@@ -142,6 +231,7 @@ class DemoteUserResource(Resource):
 api.add_resource(SignupResource, '/signup')
 api.add_resource(UserResource, '/admin/users')
 api.add_resource(ProductResource, '/admin/products')
+api.add_resource(EditProduct, '/admin/products/<int:product_id>')
 api.add_resource(PromoteUserResource, '/admin/promote/<int:user_id>')
 api.add_resource(DemoteUserResource, '/admin/demote/<int:user_id>')
 api.add_resource(HomeResource, '/')
