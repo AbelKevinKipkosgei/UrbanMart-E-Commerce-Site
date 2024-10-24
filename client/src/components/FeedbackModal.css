@@ -1,0 +1,38 @@
+.feedback-modal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: white;
+    border-radius: 10px;
+    width: 300px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  .feedback-modal h2 {
+    margin: 10px 0;
+  }
+  
+  .feedback-modal textarea {
+    width: 100%;
+    height: 60px;
+    padding: 5px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .feedback-modal button {
+    padding: 8px 15px;
+    margin: 5px 0;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .feedback-modal button:hover {
+    background-color: #0056b3;
+  }
+  

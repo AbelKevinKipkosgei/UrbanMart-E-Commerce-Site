@@ -18,7 +18,7 @@ import UserProducts from "./pages/UserProducts";
 import PromoteUser from "./pages/PromoteUser";
 import DemoteUser from "./pages/DemoteUser";
 import CreateProduct from "./pages/CreateProduct";
-
+import Footer from "./components/Footer"; // Import the Footer component
 
 function App() {
   const [cartItems, setCartItems] = useState(() => {
@@ -189,7 +189,9 @@ function App() {
             <Route path="demoteuser" element={<DemoteUser />} />
             <Route path="createproduct" element={<CreateProduct />} />
           </Route>
+          <Route path="/footer" element={<Footer />} /> {/* Add Footer Route */}
         </Routes>
+        <Footer /> {/* Render Footer Component */}
       </Router>
     </div>
   );
