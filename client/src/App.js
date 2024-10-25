@@ -12,13 +12,10 @@ import "./App.css";
 import Logout from "./pages/Logout";
 import AdminPage from "./pages/AdminPage";
 import Layout from "./components/Layout";
-import AllUsers from "./pages/AllUsers";
-import UserOrders from "./pages/UserOrders";
-import UserProducts from "./pages/UserProducts";
-import PromoteUser from "./pages/PromoteUser";
-import DemoteUser from "./pages/DemoteUser";
-import CreateProduct from "./pages/CreateProduct";
-
+import ManageUsers from "./pages/ManageUsers";
+import CreateProduct from "./components/CreateProductModal";
+import ManageProducts from "./pages/ManageProducts";
+import ManageOrders from "./pages/ManageOrders";
 
 function App() {
   const [cartItems, setCartItems] = useState(() => {
@@ -97,10 +94,9 @@ function App() {
     );
   };
 
-  const handleCheckout = (item) => {
-    setOrders((prevOrders) => [...prevOrders, item]);
-    handleRemoveFromCart(item);
-  };
+  const handleClearCart = () => {
+    setCartItems([]);
+  }
 
   const handleCancelOrder = (order) => {
     setOrders((prevOrders) =>
@@ -159,7 +155,7 @@ function App() {
                 <CartPage
                   cartItems={cartItems}
                   onRemoveFromCart={handleRemoveFromCart}
-                  onCheckout={handleCheckout}
+                  onClearCart={handleClearCart}
                 />
               </ProtectedRoute>
             }
@@ -182,11 +178,9 @@ function App() {
             }
           >
             {/* Nested routes inside AdminPage */}
-            <Route path="allusers" element={<AllUsers />} />
-            <Route path="userorders" element={<UserOrders />} />
-            <Route path="userproducts" element={<UserProducts />} />
-            <Route path="promoteuser" element={<PromoteUser />} />
-            <Route path="demoteuser" element={<DemoteUser />} />
+            <Route path="manageusers" element={<ManageUsers />} />
+            <Route path="manageorders" element={<ManageOrders />} />
+            <Route path="manageproducts" element={<ManageProducts />} />
             <Route path="createproduct" element={<CreateProduct />} />
           </Route>
         </Routes>
