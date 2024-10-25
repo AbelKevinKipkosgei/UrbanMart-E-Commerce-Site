@@ -68,7 +68,7 @@
 .cart-item-quantity {
     display: flex;
     align-items: center;
-    margin-right: 10px; /* Spacing from remove icon */
+    margin-right: 10px;
 }
 
 .cart-item-quantity button {

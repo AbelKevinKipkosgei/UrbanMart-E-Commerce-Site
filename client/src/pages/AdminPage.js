@@ -1,7 +1,7 @@
 // AdminPage.js
 import React from "react";
 import { useNavigate, Outlet, useLocation } from "react-router-dom";
-import "./AdminPage.css"; // Assuming you have CSS for styling
+import "./AdminPage.css";
 
 const AdminPage = () => {
   const navigate = useNavigate();
