@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import "./Navbar.css";
 
 function Navbar({ cartItems, orders, isLoggedIn, onLogout }) {
@@ -13,43 +13,70 @@ function Navbar({ cartItems, orders, isLoggedIn, onLogout }) {
 
   return (
     <nav className="navbar">
-      <div className="navbar-logo">
-        <h1>UrbanMart</h1>
-      </div>
-      <ul className="navbar-links">
-        <li>
-          <Link to="/admin">Admin</Link>
-        </li>
-        <li>
-          <Link to="/">Home</Link>
-        </li>
-        <li>
-          <Link to="/products">Products</Link>
-        </li>
-        <li>
-          <Link to="/cart">Cart ({cartItems.length})</Link>
-        </li>
-        <li>
-          <Link to="/orders">Orders ({orders.length})</Link>
-        </li>
-      </ul>
-      <div className="navbar-buttons">
-        {isLoggedIn ? (
-          <>
-            <button className="logout-btn" onClick={handleLogout}>
-              Logout
-            </button>
-          </>
-        ) : (
-          <>
-            <Link to="/login">
-              <button className="login-btn">Login</button>
-            </Link>
-            <Link to="/signup">
-              <button className="signup-btn">Sign Up</button>
-            </Link>
-          </>
-        )}
+      <div className="navbar-container">
+        <div className="navbar-logo">
+          <h2>UrbanMart</h2>
+        </div>
+        <ul className="navbar-links">
+          <li>
+            <NavLink
+              to="/admin"
+              className={({ isActive }) => (isActive ? "active-link" : "link")}
+            >
+              Admin
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="/"
+              className={({ isActive }) => (isActive ? "active-link" : "link")}
+            >
+              Home
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="/products"
+              className={({ isActive }) => (isActive ? "active-link" : "link")}
+            >
+              Products
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="/cart"
+              className={({ isActive }) => (isActive ? "active-link" : "link")}
+            >
+              Cart ({cartItems.length})
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="/orders"
+              className={({ isActive }) => (isActive ? "active-link" : "link")}
+            >
+              Orders
+            </NavLink>
+          </li>
+        </ul>
+        <div className="navbar-buttons">
+          {isLoggedIn ? (
+            <>
+              <button className="logout-btn" onClick={handleLogout}>
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <NavLink to="/login">
+                <button className="login-btn">Login</button>
+              </NavLink>
+              <NavLink to="/signup">
+                <button className="signup-btn">Sign Up</button>
+              </NavLink>
+            </>
+          )}
+        </div>
       </div>
     </nav>
   );
