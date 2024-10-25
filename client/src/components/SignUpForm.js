@@ -2,6 +2,7 @@ import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import "./SignUpForm.css";
+import { useNavigate } from "react-router-dom";
 
 // Validation schema
 const validationSchema = Yup.object().shape({
@@ -20,6 +21,7 @@ const validationSchema = Yup.object().shape({
 });
 
 const SignUpForm = () => {
+  const navigate = useNavigate();
   return (
     <div className="form-container">
       <h2>Sign Up</h2>
@@ -50,6 +52,7 @@ const SignUpForm = () => {
               } else {
                 alert("User registered successfully");
                 resetForm();
+                navigate("/");
               }
             })
             .catch((error) => {
