@@ -183,10 +183,13 @@ function App() {
             <Route path="manageproducts" element={<ManageProducts />} />
             <Route path="createproduct" element={<CreateProduct />} />
           </Route>
+          <Route path="/footer" element={<Footer />} /> {/* Add Footer Route */}
         </Routes>
+        <Footer /> {/* Render Footer Component */}
       </Router>
     </div>
   );
 }
 
 export default App;
+
