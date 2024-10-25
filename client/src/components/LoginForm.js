@@ -39,6 +39,7 @@ const LoginForm = ({ onLogin }) => {
                 setErrors({ username: "Invalid username or password." });
               } else {
                 alert("Login successful");
+                localStorage.setItem("userId", data.user_id);
                 onLogin(data.role); // Pass the user role to the onLogin function
                 resetForm();
                 navigate("/");

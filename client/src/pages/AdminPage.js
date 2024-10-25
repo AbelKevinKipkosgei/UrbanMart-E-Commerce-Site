@@ -11,13 +11,9 @@ const AdminPage = () => {
   const isActive = (path) => location.pathname === path;
 
   // Handlers for navigation
-  const handleViewAllUsers = () => navigate("/admin/allusers");
-  const handlePromoteUser = () => navigate("/admin/promoteuser");
-  const handleDemoteUser = () => navigate("/admin/demoteuser");
-  const handleViewUserOrders = () => navigate("/admin/userorders");
-  const handleViewUserProducts = () => navigate("/admin/userproducts");
-  const handleCreateProduct = () => navigate("/admin/createproduct");
-  const handleEditProduct = () => navigate("/admin/editproduct");
+  const handleViewAllUsers = () => navigate("/admin/manageusers");
+  const handleViewOrders = () => navigate("/admin/manageorders");
+  const handleViewAllProducts = () => navigate("/admin/manageproducts");
 
   return (
     <div className="admin-page">
@@ -26,53 +22,29 @@ const AdminPage = () => {
         <h2 className="sidebar-heading">Admin Dashboard</h2>
         <ul className="sidebar-nav">
           <li
-            className={isActive("/admin/allusers") ? "active" : ""}
+            className={isActive("/admin/manageusers") ? "active" : ""}
             onClick={handleViewAllUsers}
           >
-            All Users
+            Manage Users
           </li>
           <li
-            className={isActive("/admin/promoteuser") ? "active" : ""}
-            onClick={handlePromoteUser}
+            className={isActive("/admin/manageorders") ? "active" : ""}
+            onClick={handleViewOrders}
           >
-            Promote User
+            Manage Orders
           </li>
           <li
-            className={isActive("/admin/demoteuser") ? "active" : ""}
-            onClick={handleDemoteUser}
-          >
-            Demote User
-          </li>
-          <li
-            className={isActive("/admin/userorders") ? "active" : ""}
-            onClick={handleViewUserOrders}
-          >
-            User Orders
-          </li>
-          <li
-            className={isActive("/admin/userproducts") ? "active" : ""}
-            onClick={handleViewUserProducts}
-          >
-            User Products
-          </li>
-          <li
-            className={isActive("/admin/createproduct") ? "active" : ""}
-            onClick={handleCreateProduct}
-          >
-            Create Product
-          </li>
-          <li
-            className={isActive("/admin/editproduct") ? "active" : ""}
-            onClick={handleEditProduct}
-          >
-            Edit Product
-          </li>
+            className={isActive("/admin/manageproducts") ? "active" : ""}
+            onClick={handleViewAllProducts}
+            >
+              Manage Products
+            </li>
         </ul>
       </nav>
 
       {/* Main Content */}
       <div className="main-content">
-        <Outlet /> {/* This will render the nested admin routes */}
+        <Outlet />
       </div>
     </div>
   );

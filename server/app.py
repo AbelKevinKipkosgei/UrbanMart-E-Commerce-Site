@@ -1,7 +1,9 @@
+from sqlite3 import IntegrityError
+import traceback
 from flask import jsonify, make_response, request
 from flask_login import LoginManager, login_user, logout_user, current_user, login_required
 from flask_restful import Resource
-from models import User, Product, Order
+from models import User, Product, Order, OrderProduct
 from config import app, db, api
 
 app.secret_key = 'jf}hbYT6*_mnEy8n}SG=>xcfD5h78Di6'
@@ -70,7 +72,7 @@ class UserResource(Resource):
             return make_response(jsonify({'error': 'Unauthorized access'}), 403)
         users = [user.to_dict() for user in User.query.all()]
         return make_response(jsonify(users), 200)
-
+   
 # Product Resource
 class ProductResource(Resource):
     @login_required
@@ -93,20 +95,6 @@ class ProductResource(Resource):
         db.session.add(new_product)
         db.session.commit()
         return make_response(jsonify(new_product.to_dict()), 201)
-
-    @login_required
-    def delete(self):
-        if current_user.role != 'admin':
-            return make_response(jsonify({'error': 'Unauthorized access'}), 403)
-
-        data = request.get_json()
-        product = Product.query.get(data['id'])
-        if not product:
-            return make_response(jsonify({'error': 'Product not found'}), 404)
-
-        db.session.delete(product)
-        db.session.commit()
-        return make_response(jsonify({'message': 'Product deleted'}), 200)
     
 # Edit Product Resource
 class EditProduct(Resource):
@@ -127,6 +115,29 @@ class EditProduct(Resource):
 
         db.session.commit()
         return make_response(jsonify(product.to_dict()), 200)
+    
+# Delete Product Resource
+class DeleteProduct(Resource):
+    @login_required
+    def delete(self, product_id):
+        if current_user.role != 'admin':
+            return make_response(jsonify({'error': 'Unauthorized access'}), 403)
+
+        product = Product.query.get(product_id)
+        if not product:
+            return make_response(jsonify({'error': 'Product not found'}), 404)
+
+        # Remove product from all associated orders without deleting the orders
+        orders = product.orders
+        for order in orders:
+            order.products.remove(product)
+
+        # Now it's safe to delete the product itself
+        db.session.delete(product)
+        db.session.commit()
+
+        return make_response(jsonify({'message': 'Product deleted'}), 200)
+
 
 # Home Resource
 class HomeResource(Resource):
@@ -138,23 +149,70 @@ class PublicProductResource(Resource):
     def get(self):
         products = [product.to_dict() for product in Product.query.all()]
         return make_response(jsonify(products), 200)
+    
+# OrderList Resource
+class OrderListResource(Resource):
+    def get(self):
+        user_id = current_user.id
+        orders =  Order.query.filter_by(user_id=user_id).all()
+        return make_response(jsonify([order.to_dict() for order in orders]), 200)
 
 # Order Resource
 class OrderResource(Resource):
+    @login_required  # Ensure the user is logged in
+    def post(self):
+        data = request.get_json()
+        user_id = current_user.id  # Get the current logged-in user's ID
+        products_data = data.get('products', [])
+        total_price = data.get('totalPrice', 0.0)
+
+        if not products_data:
+            return {"error": "Invalid order data."}, 400
+
+        # Create a new Order instance
+        new_order = Order(user_id=user_id, total_price=total_price)
+
+        for item in products_data:
+            product_id = item.get('product_id')
+            quantity = item.get('quantity')
+
+            if not product_id or not quantity:
+                return {"error": "Invalid product data."}, 400
+            
+            # Create a new OrderProduct instance
+            order_product = OrderProduct(product_id=product_id, quantity=quantity)
+            new_order.products.append(order_product)
+
+        # Persist the order and its products in the database
+        try:
+            db.session.add(new_order)
+            db.session.commit()
+            return {"order": new_order.to_dict()}, 201  # Serialize if using SerializerMixin
+        except Exception as e:
+            db.session.rollback()
+            return {"error": str(e)}, 500
+        
+class CancelOrderResource(Resource):
+    @login_required
+    def delete(self, order_id):
+        order = Order.query.get(order_id)
+        if not order:
+            return {"error": "Order not found."}, 404
+        if order.user_id != current_user.id:
+            return {"error": "You are not authorized to cancel this order."}, 403
+        db.session.delete(order)
+        db.session.commit()
+        return {"message": "Order canceled successfully."}, 200
+    
+# Admin Order Resource
+class AdminOrderResource(Resource):
     @login_required
     def get(self):
-        user_orders = Order.query.filter_by(user_id=current_user.id).all()
-        orders_data = [order.to_dict() for order in user_orders]
-        return make_response(jsonify(orders_data), 200)
-
-# Cart Resource
-class CartResource(Resource):
-    @login_required
-    def get(self):
-        user_orders = Order.query.filter_by(user_id=current_user.id).all()
-        cart_items = [order.to_dict() for order in user_orders]
-        return make_response(jsonify(cart_items), 200)
-
+        if current_user.role != 'admin':
+            return make_response(jsonify({'error': 'Unauthorized access'}), 403)
+        orders = [order.to_dict() for order in Order.query.all()]
+        return make_response(jsonify(orders), 200)
+    
 # User Login Status Authentication
 class AuthStatus(Resource):
     def get(self):
@@ -213,6 +271,7 @@ class PromoteUserResource(Resource):
         db.session.commit()
         return make_response(jsonify({'message': f'User {user.username} has been promoted to admin.'}), 200)
     
+# Admin route to demote a user
 class DemoteUserResource(Resource):
     @login_required
     def post(self, user_id):
@@ -232,12 +291,15 @@ api.add_resource(SignupResource, '/signup')
 api.add_resource(UserResource, '/admin/users')
 api.add_resource(ProductResource, '/admin/products')
 api.add_resource(EditProduct, '/admin/products/<int:product_id>')
+api.add_resource(DeleteProduct, '/admin/products/<int:product_id>')
 api.add_resource(PromoteUserResource, '/admin/promote/<int:user_id>')
 api.add_resource(DemoteUserResource, '/admin/demote/<int:user_id>')
 api.add_resource(HomeResource, '/')
 api.add_resource(PublicProductResource, '/products')
+api.add_resource(AdminOrderResource, '/admin/orders')
 api.add_resource(OrderResource, '/orders')
-api.add_resource(CartResource, '/cart')
+api.add_resource(OrderListResource, '/orders')
+api.add_resource(CancelOrderResource, '/orders/<int:order_id>')
 api.add_resource(LoginResource, '/login', endpoint='login')
 api.add_resource(LogoutResource, '/logout')
 api.add_resource(AuthStatus, '/user/authenticate')
