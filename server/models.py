@@ -3,16 +3,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.ext.associationproxy import association_proxy
-
 from config import db, metadata
-
-# Association table for many-to-many relationship between products and orders
-order_product = db.Table(
-    'order_products',
-    metadata,
-    db.Column('product_id', db.Integer, db.ForeignKey('products.id')),
-    db.Column('order_id', db.Integer, db.ForeignKey('orders.id'))
-)
 
 class User(db.Model, UserMixin, SerializerMixin):
     __tablename__ = 'users'
@@ -26,8 +17,8 @@ class User(db.Model, UserMixin, SerializerMixin):
     # Relationship mapping user to orders
     orders = db.relationship('Order', back_populates='user', cascade='all, delete-orphan')
 
-    # Relationship mapping user to products
-    products = association_proxy('orders', 'product', creator=lambda product_obj: Order(product=product_obj))
+    # Association proxy to access products directly
+    products = association_proxy('orders', 'products', creator=lambda product_obj, qty: OrderProduct(product=product_obj, quantity=qty))
 
     # Serialization rules
     serialize_rules = ('-orders.user',)
@@ -39,12 +30,10 @@ class User(db.Model, UserMixin, SerializerMixin):
     
     @password.setter
     def password(self, password):
-        # Hash the password using werkzeug.security
         self._password_hash = generate_password_hash(password)
     
     # Authenticator
     def authenticate(self, password):
-        # Verify the password using werkzeug.security
         return check_password_hash(self._password_hash, password)
     
     # Flask-Login method to determine if the user is active
@@ -57,7 +46,7 @@ class User(db.Model, UserMixin, SerializerMixin):
         return str(self.id)
 
     def __repr__(self):
-        return f'User ID: {self.id}, Username: {self.username}, Role: {self.role}>'
+        return f'User ID: {self.id}, Username: {self.username}, Role: {self.role}'
 
 
 class Product(db.Model, SerializerMixin):
@@ -69,31 +58,57 @@ class Product(db.Model, SerializerMixin):
     image_url = db.Column(db.String, nullable=False)
     description = db.Column(db.String, nullable=False)
 
-    # Relationship mapping product to orders
-    orders = db.relationship('Order', secondary=order_product,  back_populates='products')
+    # Relationship mapping product to orders through OrderProduct
+    orders = db.relationship('OrderProduct', back_populates='product')
 
-    # Relationship mapping product to users
-    users = association_proxy('orders', 'user', creator=lambda user_obj: Order(user=user_obj))
+    # Association proxy to access users directly
+    users = association_proxy('orders', 'user', creator=lambda user_obj: OrderProduct(user=user_obj))
 
     # Serialization rules
-    serialize_rules = ('-orders.products',)
+    serialize_rules = ('-orders.product',)
 
     def __repr__(self):
         return f'<Product ID: {self.id}, Name: {self.name}, Price: {self.price}>'
-    
+
+
 class Order(db.Model, SerializerMixin):
     __tablename__ = 'orders'
 
     id = db.Column(db.Integer, primary_key=True)
     created_at = db.Column(db.DateTime, default=db.func.now())
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    total_price = db.Column(db.Float, nullable=False, default=0.0)
 
     # Relationship mapping order to user
     user = db.relationship('User', back_populates='orders')
 
-    # Relationship mapping order to products
-    products = db.relationship('Product', secondary=order_product, back_populates='orders')
+    # Relationship mapping order to products through OrderProduct
+    products = db.relationship('OrderProduct', back_populates='order', cascade='all, delete-orphan')
 
     # Serialization rules
-    serialize_rules = ('-user.orders','-products.orders')
+    serialize_rules = ('-user.orders', '-products.order')
+
+    def __repr__(self):
+        return f'<Order ID: {self.id}, User ID: {self.user_id}, Total Price: {self.total_price}>'
+
+
+
+class OrderProduct(db.Model, SerializerMixin):
+    __tablename__ = 'order_products'
+
+    id = db.Column(db.Integer, primary_key=True)
+    order_id = db.Column(db.Integer, db.ForeignKey('orders.id'), nullable=False)
+    product_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=False)
+    quantity = db.Column(db.Integer, nullable=False, default=1)
+
+    # Relationship mapping order product to order
+    order = db.relationship('Order', back_populates='products')
     
+    # Relationship mapping order product to product
+    product = db.relationship('Product', back_populates='orders')
+
+    # Serialization rules
+    serialize_rules = ('-order.products', '-product.orders')
+
+    def __repr__(self):
+        return f'<OrderProduct ID: {self.id}, Order ID: {self.order_id}, Product ID: {self.product_id}, Quantity: {self.quantity}>'
