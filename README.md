@@ -103,10 +103,11 @@ User authentication is managed using JSON Web Tokens (JWT). The `@login_required
 
 ### Backend
 - **Flask**: Web framework for creating REST APIs.
-- **Flask-JWT-Extended**: For JWT-based authentication.
 - **Flask-SQLAlchemy**: ORM for database management.
 - **Flask-Migrate**: For handling database migrations.
 - **Flask-CORS**: For handling cross-origin requests from the frontend.
+- **Flask-Login**: For handling login and logout requests.
+- **Bcrypt**: For password hashing and verification.
 
 ## Testing
 
