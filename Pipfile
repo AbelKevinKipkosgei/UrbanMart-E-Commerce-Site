@@ -18,6 +18,8 @@ flask-serializer = "*"
 werkzeug = "*"
 sqlalchemy-serializer = "*"
 sqlalchemy = "*"
+flask-migrate = "*"
+alembic = "*"
 
 [dev-packages]
 
