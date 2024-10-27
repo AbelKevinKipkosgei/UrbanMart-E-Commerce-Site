@@ -11,7 +11,7 @@ const EditProduct = () => {
   // Fetch all products for the list
   const fetchProductsList = async () => {
     try {
-      const response = await fetch("/admin/products");
+      const response = await fetch("/api/admin/products");
       if (!response.ok) throw new Error("Failed to fetch products");
       const data = await response.json();
       setProductsList(data);
@@ -27,7 +27,7 @@ const EditProduct = () => {
   // Fetch the product details based on the product ID
   const fetchProduct = async (id) => {
     try {
-      const response = await fetch(`/admin/products/${id}`);
+      const response = await fetch(`/api/admin/products/${id}`);
       if (!response.ok) throw new Error("Product not found");
       const data = await response.json();
       setProduct(data);
@@ -52,7 +52,7 @@ const EditProduct = () => {
     }),
     onSubmit: async (values) => {
       try {
-        const response = await fetch(`api/admin/products/${product.id}`, {
+        const response = await fetch(`/api/admin/products/${product.id}`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
