@@ -34,7 +34,7 @@ const SignUpForm = () => {
         }}
         validationSchema={validationSchema}
         onSubmit={(values, { setSubmitting, resetForm, setFieldError }) => {
-          fetch("api/signup", {
+          fetch("/api/signup", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
