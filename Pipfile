@@ -11,6 +11,7 @@ bcrypt = "*"
 passlib = "*"
 flask-login = "*"
 flask-admin = "*"
+python-dotenv = "*"
 
 [dev-packages]
 
