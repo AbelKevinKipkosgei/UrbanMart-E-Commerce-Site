@@ -12,6 +12,7 @@ passlib = "*"
 flask-login = "*"
 flask-admin = "*"
 python-dotenv = "*"
+gunicorn = "*"
 
 [dev-packages]
 
