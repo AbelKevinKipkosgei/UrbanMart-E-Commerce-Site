@@ -1,5 +1,7 @@
 # ECommerce Platform
 
+**Link to the platform: https://urbanmart-e-commerce-site.onrender.com/**
+
 An eCommerce web application built with React for the frontend and Flask for the backend. This platform allows users to browse products, add them to a cart, and place orders. Administrators can manage users, products, and orders through an admin interface.
 
 ## Features
