@@ -52,7 +52,7 @@ const EditProduct = () => {
     }),
     onSubmit: async (values) => {
       try {
-        const response = await fetch(`/admin/products/${product.id}`, {
+        const response = await fetch(`api/admin/products/${product.id}`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",

@@ -21,7 +21,7 @@ const CreateProductModal = ({ onClose, onCreate }) => {
                 price: parseFloat(values.price),
               };
 
-              const response = await fetch("/admin/products", {
+              const response = await fetch("api/admin/products", {
                 method: "POST",
                 credentials: "include",
                 headers: {

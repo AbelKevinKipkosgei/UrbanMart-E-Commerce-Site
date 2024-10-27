@@ -10,7 +10,7 @@ function OrdersPage() {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await fetch("/orders");
+        const response = await fetch("api/orders");
         if (!response.ok) {
           throw new Error("Failed to fetch orders");
         }
@@ -34,7 +34,7 @@ function OrdersPage() {
   // Handle order cancellation
   const handleCancelOrder = async (orderId) => {
     try {
-      const response = await fetch(`/orders/${orderId}`, {
+      const response = await fetch(`api/orders/${orderId}`, {
         method: "DELETE",
       });
       if (!response.ok) {
