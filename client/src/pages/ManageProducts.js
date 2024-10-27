@@ -13,7 +13,7 @@ function AllProducts() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch("/admin/products", {
+        const response = await fetch("api/admin/products", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -40,7 +40,7 @@ function AllProducts() {
   const handleDelete = async (productId) => {
     if (window.confirm("Are you sure you want to delete this product?")) {
       try {
-        const response = await fetch(`/admin/products/${productId}`, {
+        const response = await fetch(`api/admin/products/${productId}`, {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
@@ -66,7 +66,7 @@ function AllProducts() {
 
   const handleSubmitEdit = async (updatedProduct) => {
     try {
-      const response = await fetch(`/admin/products/${selectedProduct.id}`, {
+      const response = await fetch(`api/admin/products/${selectedProduct.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

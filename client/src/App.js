@@ -39,7 +39,7 @@ function App() {
   useEffect(() => {
     const checkLoginStatus = async () => {
       try {
-        const response = await fetch("/user/authenticate");
+        const response = await fetch("api/user/authenticate");
         if (response.ok) {
           const data = await response.json();
           setIsLoggedIn(data.authenticated);
@@ -114,7 +114,7 @@ function App() {
 
   const handleLogout = async () => {
     try {
-      await fetch("/logout", { method: "POST" });
+      await fetch("api/logout", { method: "POST" });
 
       localStorage.removeItem("isLoggedIn");
       localStorage.removeItem("userRole");

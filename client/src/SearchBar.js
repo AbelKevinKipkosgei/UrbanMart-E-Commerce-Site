@@ -9,7 +9,7 @@ const SearchBar = () => {
     // Fetch all products on component mount
     const fetchProducts = async () => {
       try {
-        const response = await fetch('/products'); // Fetch from the API
+        const response = await fetch('api/products'); // Fetch from the API
         const data = await response.json();
         setAllProducts(data); // Store all products
       } catch (error) {

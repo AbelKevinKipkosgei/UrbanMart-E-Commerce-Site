@@ -10,7 +10,7 @@ const UserProducts = () => {
   useEffect(() => {
     const fetchUsersWithOrders = async () => {
       try {
-        const response = await fetch("/admin/users", {
+        const response = await fetch("api/admin/users", {
           method: "GET",
           credentials: "include",
         });

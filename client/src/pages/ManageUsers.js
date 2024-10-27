@@ -10,7 +10,7 @@ const AllUsers = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch("/admin/users", {
+        const response = await fetch("api/admin/users", {
           method: "GET",
           credentials: "include", // Include cookies for authentication
         });
@@ -37,7 +37,7 @@ const AllUsers = () => {
   // Function to handle promoting a user
   const handlePromoteUser = async (userId) => {
     try {
-      const response = await fetch(`/admin/promote/${userId}`, {
+      const response = await fetch(`api/admin/promote/${userId}`, {
         method: "POST",
         credentials: "include",
       });
@@ -58,7 +58,7 @@ const AllUsers = () => {
   // Function to handle demoting a user
   const handleDemoteUser = async (userId) => {
     try {
-      const response = await fetch(`/admin/demote/${userId}`, {
+      const response = await fetch(`api/admin/demote/${userId}`, {
         method: "POST",
         credentials: "include",
       });
