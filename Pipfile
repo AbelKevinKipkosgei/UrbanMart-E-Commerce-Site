@@ -13,6 +13,9 @@ flask-login = "*"
 flask-admin = "*"
 python-dotenv = "*"
 gunicorn = "*"
+flask-restful = "*"
+flask-serializer = "*"
+werkzeug = "*"
 
 [dev-packages]
 
