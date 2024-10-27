@@ -1,6 +1,6 @@
 from sqlite3 import IntegrityError
 import traceback
-from flask import jsonify, make_response, request
+from flask import jsonify, make_response, render_template, request
 from flask_login import LoginManager, login_user, logout_user, current_user, login_required
 from flask_restful import Resource
 from models import User, Product, Order, OrderProduct
@@ -287,22 +287,22 @@ class DemoteUserResource(Resource):
         return make_response(jsonify({'message': f'Admin {user.username} has been demoted to user.'}), 200)
 
 # Registering the resources with Flask-RESTful
-api.add_resource(SignupResource, '/signup')
-api.add_resource(UserResource, '/admin/users')
-api.add_resource(ProductResource, '/admin/products')
-api.add_resource(EditProduct, '/admin/products/<int:product_id>')
-api.add_resource(DeleteProduct, '/admin/products/<int:product_id>')
-api.add_resource(PromoteUserResource, '/admin/promote/<int:user_id>')
-api.add_resource(DemoteUserResource, '/admin/demote/<int:user_id>')
+api.add_resource(SignupResource, 'api/signup')
+api.add_resource(UserResource, 'api/admin/users')
+api.add_resource(ProductResource, 'api/admin/products')
+api.add_resource(EditProduct, 'api/admin/products/<int:product_id>')
+api.add_resource(DeleteProduct, 'api/admin/products/<int:product_id>')
+api.add_resource(PromoteUserResource, 'api/admin/promote/<int:user_id>')
+api.add_resource(DemoteUserResource, 'api/admin/demote/<int:user_id>')
 api.add_resource(HomeResource, '/')
-api.add_resource(PublicProductResource, '/products')
-api.add_resource(AdminOrderResource, '/admin/orders')
-api.add_resource(OrderResource, '/orders')
-api.add_resource(OrderListResource, '/orders')
-api.add_resource(CancelOrderResource, '/orders/<int:order_id>')
-api.add_resource(LoginResource, '/login', endpoint='login')
-api.add_resource(LogoutResource, '/logout')
-api.add_resource(AuthStatus, '/user/authenticate')
+api.add_resource(PublicProductResource, 'api/products')
+api.add_resource(AdminOrderResource, 'api/admin/orders')
+api.add_resource(OrderResource, 'api/orders')
+api.add_resource(OrderListResource, 'api/orders')
+api.add_resource(CancelOrderResource, 'api/orders/<int:order_id>')
+api.add_resource(LoginResource, 'api/login', endpoint='login')
+api.add_resource(LogoutResource, 'api/logout')
+api.add_resource(AuthStatus, 'api/user/authenticate')
 
 # Error handling
 @app.errorhandler(401)
@@ -312,6 +312,10 @@ def unauthorized_error(e):
 @app.errorhandler(403)
 def forbidden_error(e):
     return make_response(jsonify({'error': 'Forbidden access. Admins only.'}), 403)
+
+@app.errorhandler(404)
+def not_found(e):
+    return render_template('index.html')
 
 # Run the application
 if __name__ == '__main__':
