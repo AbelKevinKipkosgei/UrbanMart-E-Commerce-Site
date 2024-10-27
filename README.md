@@ -99,7 +99,6 @@ User authentication is managed using JSON Web Tokens (JWT). The `@login_required
 ### Frontend
 - **React**: For UI components.
 - **React Router**: For client-side routing.
-- **Axios**: For making HTTP requests to the backend.
 - **React Toastify**: For user notifications and feedback.
 
 ### Backend
