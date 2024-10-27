@@ -16,6 +16,8 @@ gunicorn = "*"
 flask-restful = "*"
 flask-serializer = "*"
 werkzeug = "*"
+sqlalchemy-serializer = "*"
+sqlalchemy = "*"
 
 [dev-packages]
 
