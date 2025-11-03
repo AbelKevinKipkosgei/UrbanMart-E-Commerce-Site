@@ -1,0 +1,20 @@
+.rating {
+    display: flex;
+    cursor: pointer;
+  }
+  
+  .star {
+    font-size: 24px;
+    color: grey;
+    margin: 0 2px;
+    transition: color 0.2s;
+  }
+  
+  .star.selected {
+    color: gold;
+  }
+  
+  .star:hover {
+    color: darkorange;
+  }
+  

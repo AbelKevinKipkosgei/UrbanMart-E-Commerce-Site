@@ -10,7 +10,7 @@ const SearchBar = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch('/products');
+        const response = await fetch('api/products'); // Fetch from the API
         const data = await response.json();
         setAllProducts(data); // Store all products
       } catch (error) {
